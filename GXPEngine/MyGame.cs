@@ -5,7 +5,6 @@ using System.Collections.Generic;                           // System.Drawing co
 
 public class MyGame : Game {
 	Sprite sp;
-    List<Enemy> enemyList = new List<Enemy>();
     public MyGame() : base(1366, 768, false)     // Arcade screen is 1366 x 768 pixels
 	{
 		//// Draw some things on a canvas:
@@ -27,13 +26,8 @@ public class MyGame : Game {
 		sp.SetXY(width / 2, height / 2);
 		AddChild(sp);
 
-		for (int i = 0; i < 10; i++)
-		{
-			Enemy enemy = new Enemy();
-            enemy.SetTarget(sp);
-            enemyList.Add(enemy);
-            AddChild(enemy);
-        }
+		EnemyController ec = new EnemyController(sp);
+		AddChild(ec);
 	}
 
 	// For every game object, Update is called every frame, by the engine:
