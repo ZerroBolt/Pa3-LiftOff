@@ -6,8 +6,6 @@
 # GXPEngine
 GXPEngine/obj
 GXPEngine.userprefs
-GXPEngine/bin/Debug
-GXPEngine/bin/Release
 
 # User-specific files
 *.rsuser
