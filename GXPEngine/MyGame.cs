@@ -6,17 +6,18 @@ using System.Collections.Generic;                           // System.Drawing co
 public class MyGame : Game
 {
 	Sprite sp;
-	EnemyController ec;
-
-    public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
+	public int hp = 10;
+	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
 		Level level = new Level("Backgroundtest.tmx");
 
 		targetFps = 60;
 
 		AddChild(level);
+        HUD hud = new HUD(this);
+        AddChild(hud);
 
-		sp = new Sprite("square.png");
+        sp = new Sprite("square.png");
 		sp.SetOrigin(sp.width / 2, sp.height / 2);
 		sp.SetXY(width / 2, height / 2);
 		AddChild(sp);
@@ -26,6 +27,11 @@ public class MyGame : Game
 		AddChild(ec);
 	}
 
+	public void DecreaseHealth()
+	{
+		hp--;
+	}
+
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
 	{
@@ -33,7 +39,8 @@ public class MyGame : Game
 		{
 			Console.WriteLine(GetDiagnostics());
 		}
-    }
+		
+	}
 
 	static void Main()                          // Main() is the first method that's called when the program is run
 	{
