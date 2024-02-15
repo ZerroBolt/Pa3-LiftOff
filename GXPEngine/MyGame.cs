@@ -7,6 +7,7 @@ public class MyGame : Game
 {
 	Sprite sp;
 	public int hp = 10;
+	EnemyController ec;
 	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
 		Level level = new Level("Backgroundtest.tmx");
