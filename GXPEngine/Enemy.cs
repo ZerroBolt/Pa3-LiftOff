@@ -1,4 +1,5 @@
 ﻿using GXPEngine;
+using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,10 @@ class Enemy : AnimationSprite
 {
     const string imageLocation = "barry.png";
 
-    float speed = 0.5f;
+    float speed = 1f;
     int health = 1;
 
+    float animSpeed = 0.25f;
     Sprite target;
 
     int _damage = 1;
@@ -30,7 +32,7 @@ class Enemy : AnimationSprite
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);
-        SetCycle(0, 7);
+        SetCycle(0, 4);
         collider.isTrigger = true;
 
         if (obj != null)
@@ -45,28 +47,30 @@ class Enemy : AnimationSprite
 
     private void setRandomPosition()
     {
-        //switch (Utils.Random(0, 2))
-        //{
-        //    case 0:
-        //        x = Utils.Random(game.width, game.width + width);
-        //        break;
-        //    case 1:
-        //        x = Utils.Random(0 - width, 0);
-        //        break;
-        //}
-
-        //switch (Utils.Random(0, 2))
-        //{
-        //    case 0:
-        //        y = Utils.Random(game.height, game.height + height);
-        //        break;
-        //    case 1:
-        //        y = Utils.Random(0 - height, 0);
-        //        break;
-        //}
-
-        x = Utils.Random(0 - this.width, game.width + this.width);
-        y = Utils.Random(0 - this.height, game.height + this.height);
+        //Set enemy position randomly on TOP,RIGHT,DOWN,LEFT outside of screen
+        switch (Utils.Random(0, 4))
+        {
+            case 0:
+                //TOP
+                x = Utils.Random(0 - this.width, game.width + this.width);
+                y = Utils.Random(0 - this.height, 0);
+                break;
+            case 1:
+                //RIGHT
+                x = Utils.Random(game.width, game.width + this.width);
+                y = Utils.Random(0 - this.height, game.height + this.height);
+                break;
+            case 2:
+                //DOWN
+                x = Utils.Random(0 - this.width, game.width + this.width);
+                y = Utils.Random(game.height, game.height + this.height);
+                break;
+            case 3:
+                //LEFT
+                x = Utils.Random(0 - this.width, 0);
+                y = Utils.Random(0 - this.height, game.height + this.height);
+                break;
+        }
     }
 
     public void SetTarget(Sprite target)
@@ -76,34 +80,42 @@ class Enemy : AnimationSprite
 
     private void Update()
     {
-        float oldX = x;
-        //TODO: move from outside of screen to center of screen
-        if (x < target.x)
-        {
-            x += speed;
-        }
-        else
-        {
-            x -= speed;
-        }
+        if (this.target == null) return;
 
-        if (x < oldX)
+        float dx = 0;
+        float dy = 0;
+
+        if (x != target.x)
         {
-            Mirror(true, false);
-        }
-        else
-        {
-            Mirror(false, false);
+            if (x < target.x)
+            {
+                dx += speed * CalculateAngle().x;
+            }
+            else
+            {
+                dx -= speed * CalculateAngle().x;
+            }
+
+            if (dx < 0)
+            {
+                Mirror(true, false);
+            }
+            else
+            {
+                Mirror(false, false);
+            }
         }
 
         if (y < target.y)
         {
-            y += speed;
+            dy += speed * CalculateAngle().y;
         }
         else
         {
-            y -= speed;
+            dy -= speed * CalculateAngle().y;
         }
+
+        Move(dx, dy);
 
         //TODO: Check for collision
         //Do damage when it is the house
@@ -112,6 +124,26 @@ class Enemy : AnimationSprite
             this.Destroy();
         }
 
-        Animate(0.25f);
+        Animate(animSpeed);
+    }
+
+    Vector2 CalculateAngle()
+    {
+        //Y difference between enemy and target
+        float yVal = Math.Abs(this.y - target.y);
+
+        //X difference between enemy and target
+        float xVal = Math.Abs(this.x - target.x);
+
+        //Calculate to the power of x,y values
+        float yDifference = Mathf.Pow(yVal, 2);
+        float xDifference = Mathf.Pow(xVal, 2);
+        float xyVal = yDifference + xDifference;
+
+        //Calculate square root of value
+        float sqrtVal = Mathf.Sqrt(xyVal);
+
+        //Return Vector2 with calculate x,y value devided by square root
+        return new Vector2(xVal / sqrtVal, yVal / sqrtVal);
     }
 }
