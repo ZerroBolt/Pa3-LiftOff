@@ -22,7 +22,8 @@ public class MyGame : Game
 		sp.SetXY(width / 2, height / 2);
 		AddChild(sp);
 
-		EnemyController ec = new EnemyController(sp);
+		ec = new EnemyController();
+		ec.SetTarget(sp);
 		AddChild(ec);
 	}
 
