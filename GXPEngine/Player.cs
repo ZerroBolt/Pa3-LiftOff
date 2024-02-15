@@ -14,37 +14,45 @@ public class Player : AnimationSprite
 {
 
 
-    float turnSpeedShip = 3;
-    float moveSpeedShip = 5;
+    float  turnSpeedTruck = 3;
+    float moveSpeedTruck = 5;
+    int slowdurationMs = 2000;
+    int slowtime = 0;
+    bool Slowed = false;
     public Player(string fileName, int cols, int rows, TiledObject tiledobject = null) : base(fileName, cols, rows)
     {
 
         
-        
+
 
     }
 
-    
-    void MoveSpaceShip()
+
+    void MoveTruck()
     {
         float dx = 0;
         float dy = 0;
         if (Input.GetKey(Key.A))
         {
-            rotation -= turnSpeedShip;
+            rotation -= turnSpeedTruck;
         }
+        
         if (Input.GetKey(Key.D))
         {
-            rotation += turnSpeedShip;
+            rotation += turnSpeedTruck;
         }
 
         if (Input.GetKey(Key.W))
         {
-            Move(0,dx -= moveSpeedShip);
+            Move(0, dx -= moveSpeedTruck);
+        }
+        if (Input.GetKeyUp(Key.W))
+        {
+            Move(0, dx -= moveSpeedTruck * 0.98f);
         }
         if (Input.GetKey(Key.S))
         {
-            Move(0,dx += moveSpeedShip);
+            Move(0, dx += moveSpeedTruck);
         }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
@@ -62,26 +70,58 @@ public class Player : AnimationSprite
             if (collidingObject is Enemy)
             {
                 collidingObject.LateDestroy();
-                ((MyGame)game).DecreaseHealth();
+
+                ((MyGame)game).IncreaseScore();
+
             }
 
-            if (collidingObject is House) 
+            if (collidingObject is House)
             {
-                ((MyGame)game).DecreaseHealth();
+                SetXY(400, 400);
 
             }
-        }
+            if (collidingObject is Obstacle)
+            {
+
+                collidingObject.LateDestroy();
+                Slowplayer();
+                
+                
+               
+            }
 
         }
 
-    
+    }
+    void Slowplayer()
+    {
+        moveSpeedTruck = moveSpeedTruck * 0.2f;
+        turnSpeedTruck = turnSpeedTruck * 0.2f;
+        Slowed = true;
+        Console.WriteLine("Slowed");
+        slowtime = Time.time + slowdurationMs;
+        
+    }
 
-   
+
+
 
     void Update()
     {
-        
-        MoveSpaceShip();
 
+        MoveTruck();
+        if (Time.time > slowtime && Slowed)
+        {
+            
+            Slowed = false;
+            
+        }
+        if (Slowed == false)
+        {
+            moveSpeedTruck = 5;
+            turnSpeedTruck = 3;
+        }
+
+        Console.WriteLine(slowtime);
     }
 }

@@ -1,12 +1,14 @@
 using System;                                   // System contains a lot of default C# libraries 
 using GXPEngine;                                // GXPEngine contains the engine
 using System.Drawing;
-using System.Collections.Generic;                           // System.Drawing contains drawing tools such as Color definitions
+using System.Collections.Generic;
+using System.Xml.Serialization;                           // System.Drawing contains drawing tools such as Color definitions
 
 public class MyGame : Game
 {
 	Sprite sp;
 	public int hp = 10;
+	public int score = 0;
 	EnemyController ec;
 	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
@@ -31,6 +33,10 @@ public class MyGame : Game
 	public void DecreaseHealth()
 	{
 		hp--;
+	}
+	public void IncreaseScore()
+	{
+		score = score + 100;
 	}
 
 	// For every game object, Update is called every frame, by the engine:

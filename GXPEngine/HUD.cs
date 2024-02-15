@@ -6,12 +6,14 @@ using System.Threading;
 public class HUD : GameObject
 {
     EasyDraw displayHealth;
+    EasyDraw displayScore;
     MyGame mygame;
 
     public HUD(MyGame game)
     {
         this.mygame = game;
         DisplayHealthHUD();
+        DisplayScoreHUD();
         
     }
 
@@ -20,9 +22,11 @@ public class HUD : GameObject
     //HEALTH
     void DisplayHealthHUD()
     {
-        displayHealth = new EasyDraw(1366,768,true);
+        displayHealth = new EasyDraw(1366,768,false);
         displayHealth.TextSize(40);
+        displayHealth.Fill(Color.Green);
         AddChild(displayHealth);
+        
 
     }
 
@@ -35,12 +39,29 @@ public class HUD : GameObject
     }
 
 
+    void DisplayScoreHUD()
+    {
+        displayScore = new EasyDraw(1366, 768, false);
+        displayScore.TextSize(40);
+        displayScore.Fill(Color.Yellow);
+        AddChild(displayScore);
+    }
 
+    void UpdateScore()
+    {
+        displayScore.ClearTransparent();
+        displayScore.Text("Score:" + mygame.score.ToString(), 300, 100);
 
+    }
 
     void Update()
     {
-        
+        UpdateScore();
         UpdateHealth();
+
+        if (mygame.hp < 4)
+        {
+            displayHealth.Fill(Color.Red);
+        }
     }
 }
