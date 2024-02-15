@@ -10,10 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TiledMapParser;
 
-public class SpaceShip : AnimationSprite
+public class Truck : AnimationSprite
 {
 
-    public SpaceShip(string filename, int cols, int rows, TiledObject obj = null) : base("playerShip1_blue.png", 6, 6)
+    public Truck(string filename, int cols, int rows, TiledObject obj = null) : base("truck.png", 6, 6)
     {
 
         //Sprite for player

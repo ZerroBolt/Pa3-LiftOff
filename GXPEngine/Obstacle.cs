@@ -1,16 +1,16 @@
-﻿using System;
+﻿using GXPEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GXPEngine;
 using TiledMapParser;
 
-
-public class House : AnimationSprite
+public class Obstacle : AnimationSprite
 {
-    public House(string filename, int cols, int rows, TiledObject tiledobject = null) : base(filename, cols, rows)
-    {
+
+    public Obstacle(string filename, int cols, int rows, TiledObject tiledobject = null) : base(filename, cols, rows)
+    { 
 
     }
 
@@ -19,9 +19,4 @@ public class House : AnimationSprite
         SetOrigin(width / 2, height / 2);
         collider.isTrigger = true;
     }
-
-
-
-
 }
-

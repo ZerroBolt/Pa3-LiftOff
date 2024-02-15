@@ -13,7 +13,7 @@ using TiledMapParser;
 public class Powerup : AnimationSprite
 {
 
-    public Powerup(string filename, int cols, int rows, TiledObject obj = null) : base("playerShip1_blue.png", 6, 6)
+    public Powerup(string filename, int cols, int rows, TiledObject obj = null) : base(filename, cols, rows)
     {
 
         SetOrigin(width / 2, height / 2);

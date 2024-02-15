@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TiledMapParser;
 
-class Enemy : AnimationSprite
+public class Enemy : AnimationSprite
 {
     const string imageLocation = "barry.png";
 
@@ -15,7 +15,7 @@ class Enemy : AnimationSprite
     int health = 1;
 
     float animSpeed = 0.25f;
-    Sprite target;
+    public Sprite target;
 
     int _damage = 1;
     public int damage
@@ -78,6 +78,13 @@ class Enemy : AnimationSprite
         this.target = target;
     }
 
+   
+
+
+
+
+
+
     private void Update()
     {
         if (this.target == null) return;
@@ -122,6 +129,7 @@ class Enemy : AnimationSprite
         if (HitTest(target))
         {
             this.Destroy();
+            ((MyGame)game).DecreaseHealth();
         }
 
         Animate(animSpeed);
