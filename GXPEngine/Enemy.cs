@@ -10,7 +10,7 @@ class Enemy : AnimationSprite
 {
     const string imageLocation = "barry.png";
 
-    float speed = 0.5f;
+    float speed = 0.1f;
     int health = 1;
 
     Sprite target;

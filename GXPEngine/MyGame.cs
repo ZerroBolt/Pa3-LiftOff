@@ -3,17 +3,21 @@ using GXPEngine;                                // GXPEngine contains the engine
 using System.Drawing;
 using System.Collections.Generic;                           // System.Drawing contains drawing tools such as Color definitions
 
-public class MyGame : Game {
+public class MyGame : Game
+{
 	Sprite sp;
-    public MyGame() : base(1366, 768, false)     // Arcade screen is 1366 x 768 pixels
+	public int hp = 10;
+	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
 		Level level = new Level("Backgroundtest.tmx");
 
-    targetFps = 60;
+		targetFps = 60;
 
-    AddChild(level);
+		AddChild(level);
+        HUD hud = new HUD(this);
+        AddChild(hud);
 
-		sp = new Sprite("square.png");
+        sp = new Sprite("square.png");
 		sp.SetOrigin(sp.width / 2, sp.height / 2);
 		sp.SetXY(width / 2, height / 2);
 		AddChild(sp);
@@ -22,15 +26,23 @@ public class MyGame : Game {
 		AddChild(ec);
 	}
 
+	public void DecreaseHealth()
+	{
+		hp--;
+	}
+
 	// For every game object, Update is called every frame, by the engine:
-	void Update() {
+	void Update()
+	{
 		if (Input.GetKey(Key.P))
-        {
-            Console.WriteLine(GetDiagnostics());
-        }
+		{
+			Console.WriteLine(GetDiagnostics());
+		}
+		
 	}
 
 	static void Main()                          // Main() is the first method that's called when the program is run
 	{
 		new MyGame().Start();                   // Create a "MyGame" and start it
 	}
+}
