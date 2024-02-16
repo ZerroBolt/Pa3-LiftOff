@@ -10,9 +10,9 @@ using TiledMapParser;
 
 public class Level : GameObject
 {
+    House house;
 
-
-    public Level(string mapName)
+    public Level(string mapName, EnemyController ec)
     {
         TiledLoader loader = new TiledLoader(mapName);
         loader.rootObject = this;
@@ -23,6 +23,9 @@ public class Level : GameObject
         loader.autoInstance = true;
         loader.LoadObjectGroups(0); /// Objects
         loader.LoadObjectGroups(1);
+
+        house = FindObjectOfType<House>();
+        ec.SetTarget(house);
 
 
         Console.WriteLine("level loaded");

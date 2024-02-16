@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-class EnemyController : GameObject
+public class EnemyController : GameObject
 {
     List<Enemy> enemies;
     Sprite target = null;
@@ -37,7 +37,7 @@ class EnemyController : GameObject
             {
                 //Decrease spawn interval everytime an enemy spawns
                 //enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
-                enemySpawnIntervalMs -= 20;
+                enemySpawnIntervalMs -= 50;
                 Console.WriteLine(enemies.Count);
             }
         }
