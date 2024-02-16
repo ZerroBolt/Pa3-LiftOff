@@ -77,7 +77,7 @@ public class Player : AnimationSprite
 
             if (collidingObject is House)
             {
-                SetXY(400, 400);
+                //SetXY(400, 400);
 
             }
             if (collidingObject is Obstacle)

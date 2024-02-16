@@ -11,31 +11,38 @@ public class MyGame : Game
 	public int hp = 10;
 	public int score = 0;
 	EnemyController ec;
-  static SerialPort port;
+	static SerialPort port;
 	static bool isPortOpen = false;
+	ObstacleController oc;
 
   public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
-		Level level = new Level("Backgroundtest.tmx");
+		//TODO: delete demo background
+		Sprite background = new Sprite("BgDemo.png", false, false);
+		AddChild(background);
+
+        ec = new EnemyController();
+
+        Level level = new Level("Backgroundtest.tmx", ec);
 
 		targetFps = 60;
 
 		AddChild(level);
+
+
+        //      sp = new Sprite("square.png");
+        //sp.SetOrigin(sp.width / 2, sp.height / 2);
+        //sp.SetXY(width / 2, height / 2);
+        //AddChild(sp);
+
+        oc = new ObstacleController();
+        AddChild(oc);
+
+        AddChild(ec);
+
         HUD hud = new HUD(this);
         AddChild(hud);
-
-        sp = new Sprite("square.png");
-		sp.SetOrigin(sp.width / 2, sp.height / 2);
-		sp.SetXY(width / 2, height / 2);
-		AddChild(sp);
-
-		ec = new EnemyController();
-		ec.SetTarget(sp);
-		AddChild(ec);
-
-		oc = new ObstacleController();
-		AddChild(oc);
-	}
+    }
 
 	public void DecreaseHealth()
 	{

@@ -10,6 +10,7 @@ class ObstacleController : GameObject
     List<Obstacle> obstacles;
     
 
+    //int obstacleSpawnIntervalMs = 10000;
     int obstacleSpawnIntervalMs = 10000;
     int lastObstacleSpawn = 0;
 
