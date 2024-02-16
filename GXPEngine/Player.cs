@@ -85,6 +85,7 @@ public class Player : AnimationSprite
 
                 collidingObject.LateDestroy();
                 Slowplayer();
+               
                 
                 
                
@@ -98,6 +99,8 @@ public class Player : AnimationSprite
         moveSpeedTruck = moveSpeedTruck * 0.2f;
         turnSpeedTruck = turnSpeedTruck * 0.2f;
         Slowed = true;
+        
+        
         Console.WriteLine("Slowed");
         slowtime = Time.time + slowdurationMs;
         
@@ -122,6 +125,6 @@ public class Player : AnimationSprite
             turnSpeedTruck = 3;
         }
 
-        Console.WriteLine(slowtime);
+        
     }
 }

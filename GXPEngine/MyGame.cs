@@ -10,6 +10,7 @@ public class MyGame : Game
 	public int hp = 10;
 	public int score = 0;
 	EnemyController ec;
+	ObstacleController oc;
 	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
 		Level level = new Level("Backgroundtest.tmx");
@@ -28,6 +29,9 @@ public class MyGame : Game
 		ec = new EnemyController();
 		ec.SetTarget(sp);
 		AddChild(ec);
+
+		oc = new ObstacleController();
+		AddChild(oc);
 	}
 
 	public void DecreaseHealth()
@@ -36,7 +40,7 @@ public class MyGame : Game
 	}
 	public void IncreaseScore()
 	{
-		score = score + 100;
+		score = score + 1000;
 	}
 
 	// For every game object, Update is called every frame, by the engine:
@@ -44,6 +48,8 @@ public class MyGame : Game
 	{
 		if (Input.GetKey(Key.P))
 		{
+			
+			
 			Console.WriteLine(GetDiagnostics());
 		}
 		
