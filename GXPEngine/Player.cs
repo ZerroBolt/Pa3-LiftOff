@@ -52,7 +52,7 @@ public class Player : AnimationSprite
         }
         if (Input.GetKey(Key.S))
         {
-            Move(0, dx += moveSpeedTruck);
+            Move(0, dx += moveSpeedTruck * 0.5f);
         }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);

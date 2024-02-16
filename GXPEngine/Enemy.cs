@@ -9,7 +9,7 @@ using TiledMapParser;
 
 public class Enemy : AnimationSprite
 {
-    const string imageLocation = "barry.png";
+    const string imageLocation = "Zom.png";
 
     float speed = 1f;
     int health = 1;
@@ -24,7 +24,8 @@ public class Enemy : AnimationSprite
         set { _damage = value; }
     }
 
-    public Enemy(TiledObject obj=null) : base(imageLocation, 7, 1)
+    //TODO: change cols and rows for animation sprite
+    public Enemy(TiledObject obj=null) : base(imageLocation, 1, 1)
     {
         Initialize(obj);
     }
@@ -32,7 +33,9 @@ public class Enemy : AnimationSprite
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);
-        SetCycle(0, 4);
+        //TODO: setcycle for animation sprite
+        //SetCycle(0, 4);
+        scale = 0.1f;
         collider.isTrigger = true;
 
         if (obj != null)
@@ -78,13 +81,6 @@ public class Enemy : AnimationSprite
         this.target = target;
     }
 
-   
-
-
-
-
-
-
     private void Update()
     {
         if (this.target == null) return;
@@ -105,11 +101,11 @@ public class Enemy : AnimationSprite
 
             if (dx < 0)
             {
-                Mirror(true, false);
+                Mirror(false, false);
             }
             else
             {
-                Mirror(false, false);
+                Mirror(true, false);
             }
         }
 

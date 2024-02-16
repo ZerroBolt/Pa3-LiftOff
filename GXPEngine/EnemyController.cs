@@ -36,8 +36,8 @@ class EnemyController : GameObject
             if (enemySpawnIntervalMs > 200)
             {
                 //Decrease spawn interval everytime an enemy spawns
-                enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
-                //enemySpawnIntervalMs -= 10;
+                //enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
+                enemySpawnIntervalMs -= 20;
                 Console.WriteLine(enemies.Count);
             }
         }
