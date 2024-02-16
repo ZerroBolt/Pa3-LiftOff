@@ -38,7 +38,7 @@ public class HUD : GameObject
   
     }
 
-
+    //SCORE
     void DisplayScoreHUD()
     {
         displayScore = new EasyDraw(1366, 768, false);
@@ -56,6 +56,7 @@ public class HUD : GameObject
 
     void Update()
     {
+        //UPDATE HUDS
         UpdateScore();
         UpdateHealth();
 
