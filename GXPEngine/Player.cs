@@ -46,13 +46,15 @@ public class Player : AnimationSprite
         {
             Move(0, dx -= moveSpeedTruck);
         }
-        if (Input.GetKeyUp(Key.W))
+        if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
         {
-            Move(0, dx -= moveSpeedTruck * 0.98f);
+            Move(0, dx -= moveSpeedTruck + 0.5f);
         }
         if (Input.GetKey(Key.S))
         {
-            Move(0, dx += moveSpeedTruck * 0.5f);
+
+            Move(0, dx += moveSpeedTruck/2);
+
         }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);

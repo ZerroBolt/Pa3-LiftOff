@@ -11,7 +11,12 @@ public class MyGame : Game
 	public int hp = 10;
 	public int score = 0;
 	EnemyController ec;
+<<<<<<< Updated upstream
 	static SerialPort port;
+=======
+	ObstacleController oc;
+  static SerialPort port;
+>>>>>>> Stashed changes
 	static bool isPortOpen = false;
 	ObstacleController oc;
 

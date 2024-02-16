@@ -32,6 +32,7 @@ public class Obstacle : AnimationSprite
         {
             case 0:
                 //TOP
+
                 x = Utils.Random(0 - this.width, game.width);
                 y = Utils.Random(0 - this.height, game.width/2);
 
