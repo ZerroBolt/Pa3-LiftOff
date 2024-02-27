@@ -21,7 +21,10 @@ public class MyGame : Game
 
     Level level = null;
 
-	public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
+    public Camera cam;
+
+
+    public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
         targetFps = 60;
 
@@ -35,6 +38,9 @@ public class MyGame : Game
 
     void Initialize()
     {
+        cam = new Camera(0, 0, game.width, game.height);
+        cam.scale = 0.8f;
+
         ec = new EnemyController();
 
         level = new Level("Backgroundtest.tmx", ec);
@@ -46,7 +52,9 @@ public class MyGame : Game
         AddChild(ec);
 
         HUD hud = new HUD(this);
-        AddChild(hud);
+        cam.AddChild(hud);
+
+        AddChild(cam);
     }
 
 	public void DecreaseHealth()
@@ -71,18 +79,64 @@ public class MyGame : Game
 			Console.WriteLine(GetDiagnostics());
 		}
 
-        // Show scoreboard when GameOver and scoreBoard isn't already showing
-        if (gameOver && !scoreBoardShowing)
+        if (Input.GetKeyDown(Key.E) && Input.GetKey(Key.LEFT_SHIFT))
         {
-            ScoreBoard sb = new ScoreBoard(game.width, game.height, playerList);
-            AddChild(sb);
-            //sb.ShowHighScores();
-            scoreBoardShowing = true;
-
-            ec.Remove();
-            oc.Remove();
+            gameOver = true;
         }
 
+        CheckGameOver();
+
+        MoveCamera();
+    }
+
+    private void MoveCamera()
+    {
+        Player currentPlayer = level.GetCurrentPlayer();
+        float screenLimit = 200 / cam.scale;
+
+        // Move screen on horizontal axis when car is close to the sides of the screen
+        if (currentPlayer.x > 0 && currentPlayer.x < game.width)
+        {
+            if (currentPlayer.x < screenLimit)
+            {
+                cam.SetXY(currentPlayer.x + game.width / 2 - screenLimit, cam.y);
+            }
+            else if (currentPlayer.x > game.width - screenLimit)
+            {
+                cam.SetXY(currentPlayer.x - game.width / 2 + screenLimit, cam.y);
+            }
+        }
+
+        // Move screen on vertical axis when car is close to the sides of the screen
+        if (currentPlayer.y > 0 && currentPlayer.y < game.height)
+        {
+            if (currentPlayer.y < screenLimit)
+            {
+                cam.SetXY(cam.x, currentPlayer.y + game.height / 2 - screenLimit);
+            }
+            else if (currentPlayer.y > game.height - screenLimit)
+            {
+                cam.SetXY(cam.x, currentPlayer.y - game.height / 2 + screenLimit);
+            }
+        }
+    }
+
+    void CheckGameOver()
+    {
+        //Show Game over screen
+        if (gameOver)
+        {
+            // Show scoreboard when GameOver and scoreBoard isn't already showing
+            if (!scoreBoardShowing)
+            {
+                ScoreBoard sb = new ScoreBoard(game.width, game.height, playerList);
+                cam.AddChild(sb);
+                scoreBoardShowing = true;
+
+                ec.Remove();
+                oc.Remove();
+            }
+        }
     }
 
     // Destroy all objects and create them again to restart the game

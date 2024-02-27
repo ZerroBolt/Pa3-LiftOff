@@ -32,6 +32,7 @@ public class House : AnimationSprite
         {
             SetXY(game.width / 2, game.height / 2);
             initialized = true;
+            ((MyGame)game).cam.SetXY(x, y);
         }
     }
 

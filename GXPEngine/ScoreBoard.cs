@@ -15,13 +15,14 @@ public class ScoreBoard : EasyDraw
     public ScoreBoard(int gameWidth, int gameHeight, List<Player> players) : base(gameWidth, gameHeight, false)
     {
         playerList = players;
-        ShowHighScores();
+        //ShowHighScores();
+        this.SetXY(-game.width/2, -game.height/2);
+        ShowNameInput();
     }
 
     void ShowHighScores()
     {
         this.ClearTransparent();
-
         CreateBackground();
 
         // Sort the playerlist based on score and take the top 10
@@ -57,10 +58,25 @@ public class ScoreBoard : EasyDraw
         AddChild(background);
     }
 
+    EasyDraw nameInput;
     void ShowNameInput()
     {
         //TODO: Show a screen were the player can input their high score name
+        this.ClearTransparent();
+        CreateBackground();
+
+        nameInput = new EasyDraw(game.width, game.height, false);
+        nameInput.TextSize(30);
+        nameInput.TextAlign(CenterMode.Center, CenterMode.Center);
+        nameInput.Text("A");
+
+        AddChild(nameInput);
     }
+
+    string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    char currentLetter = 'A';
+    String pName = "";
+    int nameLength = 3;
 
     void Update()
     {
@@ -68,6 +84,70 @@ public class ScoreBoard : EasyDraw
         if (Input.GetKeyDown(Key.R) && Input.GetKey(Key.LEFT_SHIFT))
         {
             ((MyGame)game).Restart();
+        }
+
+        InputNameLetters();
+    }
+
+    void InputNameLetters()
+    {
+        if (nameInput != null && pName.Length < nameLength)
+        {
+            if (Input.GetKeyDown(Key.UP))
+            {
+                char[] letters = alphabet.ToCharArray();
+                for (int i = 0; i < letters.Length; i++)
+                {
+                    char letter = letters[i];
+                    if (letter.Equals(currentLetter))
+                    {
+                        if (i + 1 < letters.Length) currentLetter = letters[i + 1];
+                        break;
+                    }
+                }
+                nameInput.ClearTransparent();
+                nameInput.Text(pName + currentLetter);
+            }
+            else if (Input.GetKeyDown(Key.DOWN))
+            {
+                char[] letters = alphabet.ToCharArray();
+                for (int i = letters.Length - 1; i > 0; i--)
+                {
+                    char letter = letters[i];
+                    if (letter.Equals(currentLetter))
+                    {
+                        if (i - 1 < letters.Length) currentLetter = letters[i - 1];
+                        break;
+                    }
+                }
+                nameInput.ClearTransparent();
+                nameInput.Text(pName + currentLetter);
+            }
+            else if (Input.GetKeyDown(Key.ENTER))
+            {
+                pName += currentLetter;
+                if (pName.Length == nameLength)
+                {
+                    playerList.Last().playerName = pName;
+                    return;
+                }
+                currentLetter = 'A';
+                nameInput.ClearTransparent();
+                nameInput.Text(pName + currentLetter);
+            }
+        }
+
+        if (nameInput != null && pName.Length == nameLength)
+        {
+            if (Input.GetKey(Key.ENTER))
+            {
+                if (nameInput != null)
+                {
+                    nameInput.Destroy();
+                    nameInput = null;
+                }
+                ShowHighScores();
+            }
         }
     }
 }
