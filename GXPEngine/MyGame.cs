@@ -74,6 +74,10 @@ public class MyGame : Game
         HUD hud = new HUD(this);
         cam.AddChild(hud);
 
+        Sound music = new Sound("music.mp3", true, true);
+
+        music.Play(false, 0, 1);
+
         AddChild(cam);
     }
 
@@ -114,11 +118,14 @@ public class MyGame : Game
     public void ResetComboTime()
     {
         combotime = Time.time + combodurationMs;
+
+        combodurationMs = (int)(combodurationMs * 0.99f);
     }
     public void ResetCombo()
     {
-            combo = 1;
-            combodisplay = 0;
+        combo = 1;
+        combodisplay = 0;
+        combodurationMs = 2000;
     }
 
 	// For every game object, Update is called every frame, by the engine:

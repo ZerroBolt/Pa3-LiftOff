@@ -14,6 +14,9 @@ public class Lightning : AnimationSprite
     }
 
     int Despawntime = Time.time + 300;
+    // bool = if its alarm 
+    // alarm == load alarm sprite 
+    // lighting == loads lightnings and makes it collidable 
 
     private void Initialize(TiledObject obj)
     {
@@ -56,10 +59,14 @@ public class Lightning : AnimationSprite
         }
     }
 
-    public void DestroyLightning()
+    public void DestroyAlarm()
     {
         this.LateDestroy();
     }
+
+    Sound dyingzombie1 = new Sound("zombie_dying1.wav", false);
+    Sound dyingzombie2 = new Sound("zombie_dying2.wav", false);
+    Sound dyingzombie3 = new Sound("zombie_dying3.wav", false);
     void Update()
     {
         GameObject[] collidingObjects = GetCollisions();
@@ -68,6 +75,12 @@ public class Lightning : AnimationSprite
             if (collidingObject is Enemy)
             {
                 collidingObject.LateDestroy();
+                switch (Utils.Random(0, 3))
+                {
+                    case 0: dyingzombie1.Play(); break;
+                    case 1: dyingzombie2.Play(); break;
+                    case 2: dyingzombie3.Play(); break;
+                }
             }
         }
 
@@ -75,11 +88,8 @@ public class Lightning : AnimationSprite
         {
             Despawntime = Time.time + Despawntime;
 
-            DestroyLightning();
+            DestroyAlarm();
             Console.WriteLine("destroy lightning");
         }
-
-        Console.WriteLine(Despawntime);
-        Console.WriteLine(Time.time);
     }
 }

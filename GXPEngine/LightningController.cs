@@ -12,6 +12,8 @@ class LightningController : GameObject
     int lightningSpawnIntervalMs = 2000;
     int lastLightningSpawn = 2000;
 
+    Sound thundersound = new Sound("thunder.wav");
+
     public LightningController()
     {
         lightnings = new List<Lightning>();
@@ -25,6 +27,7 @@ class LightningController : GameObject
         //enemies.Add(enemy);
         AddChild(lightning);
         Console.WriteLine("add lightning");
+        thundersound.Play();
     }
 
     void Update()
@@ -33,13 +36,6 @@ class LightningController : GameObject
         {
             lastLightningSpawn = Time.time + lightningSpawnIntervalMs;
             SpawnLightning();
-
-            if (lightningSpawnIntervalMs > 200)
-            {
-                //Decrease spawn interval everytime an enemy spawns
-                lightningSpawnIntervalMs = ((int)(lightningSpawnIntervalMs * 0.99f));
-                //enemySpawnIntervalMs -= 10;
-            }
         }
     }
 }

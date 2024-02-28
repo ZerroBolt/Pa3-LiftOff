@@ -30,12 +30,17 @@ public class Enemy : AnimationSprite
         Initialize(obj);
     }
 
+    Sound hithouse = new Sound("house_damage.wav");
+    Sound spawning1 = new Sound("zombie_spawning1.wav");
+    Sound spawning2 = new Sound("zombie_spawning2.wav");
+    Sound spawning3 = new Sound("zombie_spawning3.wav");
+
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);
         //TODO: setcycle for animation sprite
         //SetCycle(0, 4);
-        scale = 0.1f;
+        scale = 0.15f;
         collider.isTrigger = true;
 
         if (obj != null)
@@ -73,6 +78,14 @@ public class Enemy : AnimationSprite
                 x = Utils.Random(0 - this.width, 0);
                 y = Utils.Random(0 - this.height, game.height + this.height);
                 break;
+        }
+        switch (Utils.Random(0, 30))
+        {
+            case 0: spawning1.Play(); break;
+            case 1: spawning2.Play(); break;
+            case 2: spawning3.Play(); break;
+
+
         }
     }
 
@@ -126,6 +139,7 @@ public class Enemy : AnimationSprite
         {
             this.Destroy();
             ((MyGame)game).DecreaseHealth();
+            hithouse.Play();
         }
 
         Animate(animSpeed);
