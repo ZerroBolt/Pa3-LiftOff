@@ -38,7 +38,7 @@ public class EnemyController : GameObject
                 //Decrease spawn interval everytime an enemy spawns
                 //enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
                 enemySpawnIntervalMs -= 50;
-                
+                Console.WriteLine(enemies.Count);
             }
         }
     }

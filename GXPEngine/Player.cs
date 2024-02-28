@@ -46,15 +46,13 @@ public class Player : AnimationSprite
         {
             Move(0, dx -= moveSpeedTruck);
         }
-        if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
+        if (Input.GetKeyUp(Key.W))
         {
-            Move(0, dx -= moveSpeedTruck + 0.5f);
+            Move(0, dx -= moveSpeedTruck * 0.98f);
         }
         if (Input.GetKey(Key.S))
         {
-
-            Move(0, dx += moveSpeedTruck/2);
-
+            Move(0, dx += moveSpeedTruck * 0.5f);
         }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
@@ -71,16 +69,9 @@ public class Player : AnimationSprite
         {
             if (collidingObject is Enemy)
             {
+                collidingObject.LateDestroy();
 
                 ((MyGame)game).IncreaseScore();
-                ((MyGame)game).StartCombo();
-                ((MyGame)game).ResetComboTime();
-                ((MyGame)game).IncreaseKills();
-               
-                ((MyGame)game).SpawnScore();
-                ((MyGame)game).scorehud.UpdateScoreOnCar(collidingObject as Enemy);
-
-                collidingObject.LateDestroy();
 
             }
 
@@ -91,7 +82,7 @@ public class Player : AnimationSprite
             }
             if (collidingObject is Obstacle)
             {
-                ((MyGame)game).DecreaseOb();
+
                 collidingObject.LateDestroy();
                 Slowplayer();
                
@@ -130,7 +121,7 @@ public class Player : AnimationSprite
         }
         if (Slowed == false)
         {
-            moveSpeedTruck = 5; 
+            moveSpeedTruck = 5;
             turnSpeedTruck = 3;
         }
 

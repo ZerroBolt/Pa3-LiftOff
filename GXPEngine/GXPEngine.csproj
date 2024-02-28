@@ -41,9 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LightningController.cs" />
-    <Compile Include="Lightning.cs" />
-    <Compile Include="ScoreHUD.cs" />
     <Compile Include="ObstacleController.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Enemy.cs" />

@@ -128,8 +128,6 @@ public class Enemy : AnimationSprite
             ((MyGame)game).DecreaseHealth();
         }
 
-        
-
         Animate(animSpeed);
     }
 
