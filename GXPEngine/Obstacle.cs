@@ -1,4 +1,5 @@
 ﻿using GXPEngine;
+using GXPEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,10 @@ public class Obstacle : AnimationSprite
         collider.isTrigger = true;
         scale = 0.25f;
 
-        setRandomPosition();
+        Vector2 position = setRandomPosition();
+        SetXY(position.x, position.y);
+
+        CheckColliding();
     }
 
     public void DestroyObstacle()
@@ -30,34 +34,26 @@ public class Obstacle : AnimationSprite
         this.LateDestroy();
     }
 
-    private void setRandomPosition()
+    private Vector2 setRandomPosition()
     {
-        //Set enemy position randomly on TOP,RIGHT,DOWN,LEFT outside of screen
-        switch (Utils.Random(0, 4))
+        float xPos = Utils.Random(0 + this.width, game.width);
+        float yPos = Utils.Random(0 + this.height, game.height - this.height);
+
+        return new Vector2(xPos, yPos);
+    }
+
+    void CheckColliding()
+    {
+        GameObject[] collidingObjects = GetCollisions();
+        foreach (GameObject collidingObject in collidingObjects)
         {
-            case 0:
-                //TOP
-                x = Utils.Random(0 - this.width, game.width);
-                y = Utils.Random(0 - this.height, game.width / 2);
+            if (collidingObject is House || collidingObject is Player)
+            {
+                Vector2 position = setRandomPosition();
+                SetXY(position.x, position.y);
+                CheckColliding();
                 break;
-
-            case 1:
-                //RIGHT
-                x = Utils.Random(game.width / 2, game.width);
-                y = Utils.Random(0 + this.height, game.height - this.height);
-                break;
-
-            case 2:
-                //DOWN
-                x = Utils.Random(game.width / 2, game.width);
-                y = Utils.Random(game.height / 2 + 100, game.height);
-                break;
-
-            case 3:
-                //LEFT
-                x = Utils.Random(0, game.width / 2 - 50);
-                y = Utils.Random(0 - this.height, game.height + this.height);
-                break;
+            }
         }
     }
 
