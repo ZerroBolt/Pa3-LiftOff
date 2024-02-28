@@ -14,6 +14,7 @@ public class Obstacle : AnimationSprite
         Initialize(obj);
     }
 
+    int Despawntime = Time.time + 15000;
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);
@@ -21,8 +22,12 @@ public class Obstacle : AnimationSprite
         collider.isTrigger = true;
         scale = 0.25f;
 
- 
         setRandomPosition();
+    }
+
+    public void DestroyObstacle()
+    {
+        this.LateDestroy();
     }
 
     private void setRandomPosition()
@@ -33,29 +38,37 @@ public class Obstacle : AnimationSprite
             case 0:
                 //TOP
                 x = Utils.Random(0 - this.width, game.width);
-                y = Utils.Random(0 - this.height, game.width/2);
-
-
-                Console.WriteLine("Top"); 
+                y = Utils.Random(0 - this.height, game.width / 2);
                 break;
+
             case 1:
                 //RIGHT
-                x = Utils.Random(game.width/2, game.width);
+                x = Utils.Random(game.width / 2, game.width);
                 y = Utils.Random(0 + this.height, game.height - this.height);
-                Console.WriteLine("Right");
                 break;
+
             case 2:
                 //DOWN
-                x = Utils.Random(game.width/2, game.width);
-                y = Utils.Random(game.height/2+100, game.height);
-                Console.WriteLine("Down");
+                x = Utils.Random(game.width / 2, game.width);
+                y = Utils.Random(game.height / 2 + 100, game.height);
                 break;
+
             case 3:
                 //LEFT
-                x = Utils.Random(0, game.width/2-50);
+                x = Utils.Random(0, game.width / 2 - 50);
                 y = Utils.Random(0 - this.height, game.height + this.height);
-                Console.WriteLine("Left");
                 break;
+        }
+    }
+
+    void Update()
+    {
+        if (Time.time > Despawntime)
+        {
+            Despawntime = Time.time + Despawntime;
+
+            DestroyObstacle();
+            Console.WriteLine("destroy lightning");
         }
     }
 }

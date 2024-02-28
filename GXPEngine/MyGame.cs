@@ -36,7 +36,6 @@ public class MyGame : Game
 
     public Camera cam;
 
-
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
         targetFps = 60;
@@ -48,6 +47,16 @@ public class MyGame : Game
     {
         playerList.Add(player);
     }
+
+    void Initialize()
+    {
+        Sprite background = new Sprite("BgDemo.png", false, false);
+        background.SetOrigin(background.width/2, background.height/2);
+        background.SetXY(game.width/2, game.height/2);
+        AddChild(background);
+
+        cam = new Camera(0, 0, game.width, game.height);
+        cam.scale = 0.8f;
 
         ec = new EnemyController();
 
@@ -93,35 +102,24 @@ public class MyGame : Game
 
     public void IncreaseKills()
     {
-
         kills++;
     }
 
     public void StartCombo()
     {
-
         combo++;
         combodisplay++;
-       
     }
 
     public void ResetComboTime()
     {
         combotime = Time.time + combodurationMs;
-
-
-
-        
     }
     public void ResetCombo()
     {
-        
             combo = 1;
             combodisplay = 0;
-       
     }
-
-    
 
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
@@ -145,6 +143,8 @@ public class MyGame : Game
         CheckGameOver();
 
         MoveCamera();
+
+        Console.WriteLine("X: " + level.GetCurrentPlayer().x + "Y: " + level.GetCurrentPlayer().y);
     }
 
     public ScoreHUD scorehud;
@@ -152,12 +152,9 @@ public class MyGame : Game
     {
         scorehud = new ScoreHUD(this);
         AddChild(scorehud);
-
-        
     }
     public void DecreaseOb()
     {
-
         obstaclecount--;
     }
 
@@ -180,7 +177,7 @@ public class MyGame : Game
         }
 
         // Move screen on vertical axis when car is close to the sides of the screen
-        if (currentPlayer.y > 0 && currentPlayer.y < game.height)
+        if (currentPlayer.y > (0 + currentPlayer.height) && currentPlayer.y < (game.height - currentPlayer.height))
         {
             if (currentPlayer.y < screenLimit)
             {

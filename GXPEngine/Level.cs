@@ -39,12 +39,8 @@ public class Level : GameObject
         return player;
     }
 
-
-
     public void Update()
     {
-
-
 
     }
 }

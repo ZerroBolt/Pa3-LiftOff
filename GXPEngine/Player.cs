@@ -41,11 +41,12 @@ public class Player : AnimationSprite
     {
         float dx = 0;
         float dy = 0;
+
         if (Input.GetKey(Key.A))
         {
             rotation -= turnSpeedTruck;
         }
-        
+
         if (Input.GetKey(Key.D))
         {
             rotation += turnSpeedTruck;
@@ -55,13 +56,14 @@ public class Player : AnimationSprite
         {
             Move(0, dx -= moveSpeedTruck);
         }
-        if (Input.GetKeyUp(Key.W))
+        if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
         {
-            Move(0, dx -= moveSpeedTruck * 0.98f);
+            Move(0, dx -= moveSpeedTruck + 0.5f);
         }
+
         if (Input.GetKey(Key.S))
         {
-            Move(0, dx += moveSpeedTruck * 0.5f);
+            Move(0, dx += moveSpeedTruck / 2);
         }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
@@ -77,9 +79,15 @@ public class Player : AnimationSprite
         {
             if (collidingObject is Enemy)
             {
-                collidingObject.LateDestroy();
-
                 ((MyGame)game).IncreaseScore();
+                ((MyGame)game).StartCombo();
+                ((MyGame)game).ResetComboTime();
+                ((MyGame)game).IncreaseKills();
+
+                ((MyGame)game).SpawnScore();
+                ((MyGame)game).scorehud.UpdateScoreOnCar(collidingObject as Enemy);
+
+                collidingObject.LateDestroy();
             }
 
             if (collidingObject is House)
@@ -88,6 +96,7 @@ public class Player : AnimationSprite
             }
             if (collidingObject is Obstacle)
             {
+                ((MyGame)game).DecreaseOb();
                 collidingObject.LateDestroy();
                 Slowplayer();
             }
@@ -99,7 +108,7 @@ public class Player : AnimationSprite
         moveSpeedTruck = moveSpeedTruck * 0.2f;
         turnSpeedTruck = turnSpeedTruck * 0.2f;
         Slowed = true;
-        
+
         Console.WriteLine("Slowed");
         slowtime = Time.time + slowdurationMs;
     }

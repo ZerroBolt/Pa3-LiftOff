@@ -9,8 +9,6 @@ class ObstacleController : GameObject
 {
     List<Obstacle> obstacles;
     
-
-    //int obstacleSpawnIntervalMs = 10000;
     int obstacleSpawnIntervalMs = 10000;
     int lastObstacleSpawn = 0;
 
@@ -34,15 +32,15 @@ class ObstacleController : GameObject
         {
             lastObstacleSpawn = Time.time + obstacleSpawnIntervalMs;
             SpawnObstacle();
+
             if (obstacleSpawnIntervalMs > 200)
             {
                 //Decrease spawn interval everytime an enemy spawns
                 obstacleSpawnIntervalMs = ((int)(obstacleSpawnIntervalMs * 0.99f));
                 //enemySpawnIntervalMs -= 10;
-                
             }
         }
     }
 
-  
+
 }
