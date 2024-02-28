@@ -6,35 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using TiledMapParser;
 
-public class Obstacle : AnimationSprite
+public class Lightning : AnimationSprite
 {
+    
 
-    public Obstacle(TiledObject obj = null) : base("stone1.png", 1, 1)
+    public Lightning(TiledObject obj = null) : base("colors.png", 1, 1)
     {
         Initialize(obj);
     }
-
-    int Despawntime = Time.time + 15000;
+    
+    int Despawntime = Time.time + 300;
+    
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);
-        
+
         collider.isTrigger = true;
-        scale = 0.25f;
-        
+        scale = 2f;
 
- 
+
+
         setRandomPosition();
-    }
-
-
-    public void DestroyObstacle()
-    {
-
-        this.LateDestroy();
-
-
-
     }
 
     private void setRandomPosition()
@@ -46,40 +38,62 @@ public class Obstacle : AnimationSprite
                 //TOP
 
                 x = Utils.Random(0 - this.width, game.width);
-                y = Utils.Random(0 - this.height, game.width/2);
+                y = Utils.Random(0 - this.height, game.width / 2);
 
 
-                 
+
                 break;
             case 1:
                 //RIGHT
-                x = Utils.Random(game.width/2, game.width);
+                x = Utils.Random(game.width / 2, game.width);
                 y = Utils.Random(0 + this.height, game.height - this.height);
-                
+
                 break;
             case 2:
                 //DOWN
-                x = Utils.Random(game.width/2, game.width);
-                y = Utils.Random(game.height/2+100, game.height);
-                
+                x = Utils.Random(game.width / 2, game.width);
+                y = Utils.Random(game.height / 2 + 100, game.height);
+
                 break;
             case 3:
                 //LEFT
-                x = Utils.Random(0, game.width/2-50);
+                x = Utils.Random(0, game.width / 2 - 50);
                 y = Utils.Random(0 - this.height, game.height + this.height);
-                
+
                 break;
         }
     }
 
+    public void DestroyLightning()
+    {
+
+        this.LateDestroy();
+
+        
+
+    }
     void Update()
     {
+        GameObject[] collidingObjects = GetCollisions();
+        foreach (GameObject collidingObject in collidingObjects)
+        {
+            if (collidingObject is Enemy)
+            {
+                collidingObject.LateDestroy();
+                
+            }
+        }
+
+        
         if (Time.time > Despawntime)
         {
             Despawntime = Time.time + Despawntime;
 
-            DestroyObstacle();
+            DestroyLightning();
             Console.WriteLine("destroy lightning");
         }
+
+        Console.WriteLine(Despawntime);
+        Console.WriteLine(Time.time);
     }
 }

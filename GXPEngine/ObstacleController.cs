@@ -10,9 +10,10 @@ class ObstacleController : GameObject
     List<Obstacle> obstacles;
     
 
-    //int obstacleSpawnIntervalMs = 10000;
+    
     int obstacleSpawnIntervalMs = 10000;
     int lastObstacleSpawn = 0;
+    
 
     public ObstacleController()
     {
@@ -26,6 +27,7 @@ class ObstacleController : GameObject
         //TODO: Do we need to have the enemies in a list?
         //enemies.Add(enemy);
         AddChild(obstacle);
+        
     }
 
     void Update()
@@ -34,6 +36,7 @@ class ObstacleController : GameObject
         {
             lastObstacleSpawn = Time.time + obstacleSpawnIntervalMs;
             SpawnObstacle();
+            
             if (obstacleSpawnIntervalMs > 200)
             {
                 //Decrease spawn interval everytime an enemy spawns

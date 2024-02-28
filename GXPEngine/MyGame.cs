@@ -7,52 +7,128 @@ using System.IO.Ports;                           // System.Drawing contains draw
 
 public class MyGame : Game
 {
-	Sprite sp;
+	/*Sprite sp;*/
 	public int hp = 10;
 	public int score = 0;
+    public int scoreincrease = 0;
+    public int combo = 1;
+    public int combodisplay = 0;
+    public float combohudtime = 0.000f;
+    public int combotime = 0;
+    public int kills = 0;
+    int combodurationMs = 2000;
+
+    public int obstaclecount = 0;
+
 	EnemyController ec;
+
 	static SerialPort port;
+
 	static bool isPortOpen = false;
 	ObstacleController oc;
+    LightningController lc;
 
-  public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
-	{
-		//TODO: delete demo background
-		Sprite background = new Sprite("BgDemo.png", false, false);
-		AddChild(background);
+    public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
+    {
+        //TODO: delete demo background
+        Sprite background = new Sprite("BgDemo.png", false, false);
+        AddChild(background);
 
         ec = new EnemyController();
-
         Level level = new Level("Backgroundtest.tmx", ec);
 
-		targetFps = 60;
+        targetFps = 60;
 
-		AddChild(level);
+        AddChild(level);
 
 
         //      sp = new Sprite("square.png");
         //sp.SetOrigin(sp.width / 2, sp.height / 2);
         //sp.SetXY(width / 2, height / 2);
         //AddChild(sp);
-
+        
+        AddChild(ec);
         oc = new ObstacleController();
         AddChild(oc);
+        lc = new LightningController();
+        AddChild(lc);
 
-        AddChild(ec);
+        
 
         HUD hud = new HUD(this);
         AddChild(hud);
-    }
+         
+      }
+
 
 	public void DecreaseHealth()
 	{
 		hp--;
 	}
+
+    
 	public void IncreaseScore()
 	{
-		score = score + 1000;
+        if (combo == 0)
+        {
+            score = score + 1000;
+        }
+        else
+        {
+            scoreincrease =  1000 * combo;
+
+            score = scoreincrease + score;
+        }
 	}
 
+    public void IncreaseKills()
+    {
+
+        kills++;
+    }
+
+    public void StartCombo()
+    {
+
+        combo++;
+        combodisplay++;
+       
+    }
+
+    public void ResetComboTime()
+    {
+        combotime = Time.time + combodurationMs;
+
+
+
+        
+    }
+    public void ResetCombo()
+    {
+        
+            combo = 1;
+            combodisplay = 0;
+       
+    }
+    public ScoreHUD scorehud;
+    public void SpawnScore()
+    {
+        scorehud = new ScoreHUD(this);
+        AddChild(scorehud);
+
+        
+    }
+
+    public void DecreaseOb()
+    {
+
+        obstaclecount--;
+    }
+
+
+
+
+ 
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
 	{
@@ -63,6 +139,13 @@ public class MyGame : Game
 			Console.WriteLine(GetDiagnostics());
 		}
 
+        if (combotime < Time.time)
+        {
+            ResetCombo();
+        }
+        combohudtime = (combotime - Time.time);
+
+        
     }
 
 	static void Main()                          // Main() is the first method that's called when the program is run
