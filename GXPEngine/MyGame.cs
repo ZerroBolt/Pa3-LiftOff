@@ -9,10 +9,23 @@ public class MyGame : Game
 {
 	public int hp = 10;
 	public int score = 0;
+    public int scoreincrease = 0;
+    public int combo = 1;
+    public int combodisplay = 0;
+    public float combohudtime = 0.000f;
+    public int combotime = 0;
+    public int kills = 0;
+    int combodurationMs = 2000;
+
+    public int obstaclecount = 0;
+    
 	EnemyController ec;
+    
 	static SerialPort port;
 	static bool isPortOpen = false;
+    
 	ObstacleController oc;
+    LightningController lc;
 
     bool gameOver = false;
     bool scoreBoardShowing = false;
@@ -36,11 +49,6 @@ public class MyGame : Game
         playerList.Add(player);
     }
 
-    void Initialize()
-    {
-        cam = new Camera(0, 0, game.width, game.height);
-        cam.scale = 0.8f;
-
         ec = new EnemyController();
 
         level = new Level("Backgroundtest.tmx", ec);
@@ -50,6 +58,9 @@ public class MyGame : Game
         AddChild(oc);
 
         AddChild(ec);
+
+        lc = new LightningController();
+        AddChild(lc);
 
         HUD hud = new HUD(this);
         cam.AddChild(hud);
@@ -65,11 +76,52 @@ public class MyGame : Game
             gameOver = true;
         }
 	}
-	public void IncreaseScore()
+    public void IncreaseScore()
 	{
-		score = score + 1000;
+        if (combo == 0)
+        {
+            score = score + 1000;
+        }
+        else
+        {
+            scoreincrease =  1000 * combo;
+
+            score = scoreincrease + score;
+        }
         level.GetCurrentPlayer().score = score;
 	}
+
+    public void IncreaseKills()
+    {
+
+        kills++;
+    }
+
+    public void StartCombo()
+    {
+
+        combo++;
+        combodisplay++;
+       
+    }
+
+    public void ResetComboTime()
+    {
+        combotime = Time.time + combodurationMs;
+
+
+
+        
+    }
+    public void ResetCombo()
+    {
+        
+            combo = 1;
+            combodisplay = 0;
+       
+    }
+
+    
 
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
@@ -83,10 +135,30 @@ public class MyGame : Game
         {
             gameOver = true;
         }
+        
+        if (combotime < Time.time)
+        {
+            ResetCombo();
+        }
+        combohudtime = (combotime - Time.time);
 
         CheckGameOver();
 
         MoveCamera();
+    }
+
+    public ScoreHUD scorehud;
+    public void SpawnScore()
+    {
+        scorehud = new ScoreHUD(this);
+        AddChild(scorehud);
+
+        
+    }
+    public void DecreaseOb()
+    {
+
+        obstaclecount--;
     }
 
     private void MoveCamera()
