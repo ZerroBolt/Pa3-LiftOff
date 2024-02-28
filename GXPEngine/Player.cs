@@ -19,44 +19,56 @@ public class Player : AnimationSprite
     int slowdurationMs = 2000;
     int slowtime = 0;
     bool Slowed = false;
+    bool Moving = false;
     public Player(string fileName, int cols, int rows, TiledObject tiledobject = null) : base(fileName, cols, rows)
     {
 
-        
 
+        
 
     }
 
 
     void MoveTruck()
     {
+        Moving = false;
         float dx = 0;
         float dy = 0;
         if (Input.GetKey(Key.A))
         {
             rotation -= turnSpeedTruck;
+            Moving = true;
         }
+      
         
         if (Input.GetKey(Key.D))
         {
             rotation += turnSpeedTruck;
+            Moving = true;
         }
+      
 
         if (Input.GetKey(Key.W))
         {
             Move(0, dx -= moveSpeedTruck);
+            Moving = true;
         }
+      
+
         if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
         {
             Move(0, dx -= moveSpeedTruck + 0.5f);
+            Moving = true;
         }
+       
         if (Input.GetKey(Key.S))
         {
 
             Move(0, dx += moveSpeedTruck/2);
+            Moving = true;  
 
         }
-
+        
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
 
         float vx = dx * delaTimeClamped / 1000;
@@ -69,7 +81,7 @@ public class Player : AnimationSprite
         GameObject[] collidingObjects = GetCollisions();
         foreach (GameObject collidingObject in collidingObjects)
         {
-            if (collidingObject is Enemy)
+            if (collidingObject is Enemy && Moving)
             {
 
                 ((MyGame)game).IncreaseScore();
@@ -82,6 +94,13 @@ public class Player : AnimationSprite
 
                 collidingObject.LateDestroy();
 
+                switch(Utils.Random(0,3))
+                {
+                    case 0: dyingzombie1.Play(false,0,1); break;
+                    case 1: dyingzombie2.Play(false,0,1); break;
+                    case 2: dyingzombie3.Play(false,0,1); break;
+                }
+
             }
 
             if (collidingObject is House)
@@ -91,7 +110,7 @@ public class Player : AnimationSprite
             }
             if (collidingObject is Obstacle)
             {
-                ((MyGame)game).DecreaseOb();
+                hitobstacle.Play(false,0,0.5f);
                 collidingObject.LateDestroy();
                 Slowplayer();
                
@@ -116,11 +135,19 @@ public class Player : AnimationSprite
     }
 
 
+    Sound movingcar = new Sound("car_moving.wav", false);
+    Sound idlecar = new Sound("car_idle.wav", false);
+    Sound hitobstacle = new Sound("obstacle_hit.wav", false);
+    Sound dyingzombie1 = new Sound("zombie_dying1.wav", false);
+    Sound dyingzombie2 = new Sound("zombie_dying2.wav", false);
+    Sound dyingzombie3 = new Sound("zombie_dying3.wav", false);
+
+
 
 
     void Update()
     {
-
+        
         MoveTruck();
         if (Time.time > slowtime && Slowed)
         {
@@ -134,6 +161,20 @@ public class Player : AnimationSprite
             turnSpeedTruck = 3;
         }
 
-        
+        if (Moving)
+        {
+
+            
+            movingcar.Play(false,0,0);
+              
+            Console.WriteLine("moving");
+        }
+        else
+        {
+            idlecar.Play(false,0,0);
+            
+            Console.WriteLine("not moving");
+        }
+        Console.WriteLine(Time.time);
     }
 }

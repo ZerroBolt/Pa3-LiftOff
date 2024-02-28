@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO.Ports;                           // System.Drawing contains drawing tools such as Color definitions
+using System.Media;
 
 public class MyGame : Game
 {
@@ -28,6 +29,7 @@ public class MyGame : Game
 	ObstacleController oc;
     LightningController lc;
 
+    
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
     {
         //TODO: delete demo background
@@ -57,8 +59,11 @@ public class MyGame : Game
 
         HUD hud = new HUD(this);
         AddChild(hud);
-         
-      }
+
+        Sound music = new Sound("music.mp3", true,true);
+
+        music.Play(false, 0, 1);
+    }
 
 
 	public void DecreaseHealth()
@@ -99,7 +104,7 @@ public class MyGame : Game
     {
         combotime = Time.time + combodurationMs;
 
-
+        combodurationMs = (int)(combodurationMs * 0.99f);
 
         
     }
@@ -108,7 +113,7 @@ public class MyGame : Game
         
             combo = 1;
             combodisplay = 0;
-       
+        combodurationMs = 2000;
     }
     public ScoreHUD scorehud;
     public void SpawnScore()
@@ -119,24 +124,20 @@ public class MyGame : Game
         
     }
 
-    public void DecreaseOb()
+
+
+
+
+
+    // For every game object, Update is called every frame, by the engine:
+    void Update()
     {
-
-        obstaclecount--;
-    }
-
-
-
-
- 
-	// For every game object, Update is called every frame, by the engine:
-	void Update()
-	{
-		if (Input.GetKey(Key.P))
+       
+        if (Input.GetKey(Key.P))
 		{
-			
-			
-			Console.WriteLine(GetDiagnostics());
+       
+
+            Console.WriteLine(GetDiagnostics());
 		}
 
         if (combotime < Time.time)
