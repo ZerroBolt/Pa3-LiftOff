@@ -91,6 +91,7 @@
     <Compile Include="GXPEngine\SoLoud\SoloudSoundSystem.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Powerup.cs" />
+    <Compile Include="ScoreBoard.cs" />
     <Compile Include="Truck.cs" />
   </ItemGroup>
   <ItemGroup>
