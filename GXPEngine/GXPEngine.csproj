@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArduinoInput.cs" />
     <Compile Include="Lightning.cs" />
     <Compile Include="LightningController.cs" />
     <Compile Include="ObstacleController.cs" />

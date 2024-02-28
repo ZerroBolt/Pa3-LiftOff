@@ -38,40 +38,83 @@ public class Player : AnimationSprite
 
     }
 
+    void RotateTruck()
+    {
+        if (MyGame.isPortOpen)
+        {
+            //TODO: Rotate the truck based on the steering wheel rotation
+            // Rotation 0 - 30 && speed 91 - 100 = drift left
+
+            // Rotation 250 - 280 && speed 91 - 100 = drift right
+
+            // Rotation 0 - 120 = rotate left
+
+            // Rotation 160 - 280 = rotation right
+
+            // Rotation 121 - 159 = move forward
+
+        }
+        else
+        {
+            if (Input.GetKey(Key.A))
+            {
+                rotation -= turnSpeedTruck;
+                Moving = true;
+            }
+
+            if (Input.GetKey(Key.D))
+            {
+                rotation += turnSpeedTruck;
+                Moving = true;
+            }
+        }
+    }
+
+    float MoveTruck(float dx)
+    {
+        //TODO: Move the truck based on the shift position
+        // Shift 0 - 39 = backwards
+
+        // Shift 40 - 90 = forwards
+
+        // Shift 91 - 100 = drift
+
+
+        return dx;
+    }
+
     void MoveTruck()
     {
         Moving = false;
         float dx = 0;
         float dy = 0;
 
-        if (Input.GetKey(Key.A))
+        RotateTruck();
+
+        if (MyGame.isPortOpen)
         {
-            rotation -= turnSpeedTruck;
-            Moving = true;
+            dx = MoveTruck(dx);
+        }
+        else
+        {
+            if (Input.GetKey(Key.W))
+            {
+                Move(0, dx -= moveSpeedTruck);
+                Moving = true;
+            }
+            if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
+            {
+                Move(0, dx -= moveSpeedTruck + 0.5f);
+                Moving = true;
+            }
+
+            if (Input.GetKey(Key.S))
+            {
+                Move(0, dx += moveSpeedTruck / 2);
+                Moving = true;
+            }
         }
 
-        if (Input.GetKey(Key.D))
-        {
-            rotation += turnSpeedTruck;
-            Moving = true;
-        }
-
-        if (Input.GetKey(Key.W))
-        {
-            Move(0, dx -= moveSpeedTruck);
-            Moving = true;
-        }
-        if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
-        {
-            Move(0, dx -= moveSpeedTruck + 0.5f);
-            Moving = true;
-        }
-
-        if (Input.GetKey(Key.S))
-        {
-            Move(0, dx += moveSpeedTruck / 2);
-            Moving = true;
-        }
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
 
