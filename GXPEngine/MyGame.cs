@@ -36,6 +36,7 @@ public class MyGame : Game
         Sprite background = new Sprite("BgDemo.png", false, false);
         AddChild(background);
 
+
         ec = new EnemyController();
         Level level = new Level("Backgroundtest.tmx", ec);
 
