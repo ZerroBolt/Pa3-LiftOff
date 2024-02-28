@@ -11,10 +11,10 @@ public class HUD : GameObject
 
     public HUD(MyGame game)
     {
+        this.SetXY(-game.width/2, -game.height/2);
         this.mygame = game;
         DisplayHealthHUD();
         DisplayScoreHUD();
-        
     }
 
 

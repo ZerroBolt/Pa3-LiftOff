@@ -11,6 +11,7 @@ using TiledMapParser;
 public class Level : GameObject
 {
     House house;
+    Player player;
 
     public Level(string mapName, EnemyController ec)
     {
@@ -27,9 +28,15 @@ public class Level : GameObject
         house = FindObjectOfType<House>();
         ec.SetTarget(house);
 
+        player = FindObjectOfType<Player>();
+        if (player != null) ((MyGame)game).AddPlayerToList(player);
 
         Console.WriteLine("level loaded");
+    }
 
+    public Player GetCurrentPlayer()
+    {
+        return player;
     }
 
 

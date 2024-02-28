@@ -12,21 +12,30 @@ using TiledMapParser;
 
 public class Player : AnimationSprite
 {
-
-
     float  turnSpeedTruck = 3;
     float moveSpeedTruck = 5;
     int slowdurationMs = 2000;
     int slowtime = 0;
     bool Slowed = false;
+
+    private int _score = 0;
+    public int score
+    {
+        get { return _score; }
+        set { _score = value; }
+    }
+
+    private string _playerName = null;
+    public string playerName
+    {
+        get { return _playerName; }
+        set { _playerName = value; }
+    }
+
     public Player(string fileName, int cols, int rows, TiledObject tiledobject = null) : base(fileName, cols, rows)
     {
 
-        
-
-
     }
-
 
     void MoveTruck()
     {
@@ -63,7 +72,6 @@ public class Player : AnimationSprite
         MoveUntilCollision(vx, 0);
         MoveUntilCollision(0, vy);
 
-
         GameObject[] collidingObjects = GetCollisions();
         foreach (GameObject collidingObject in collidingObjects)
         {
@@ -72,59 +80,41 @@ public class Player : AnimationSprite
                 collidingObject.LateDestroy();
 
                 ((MyGame)game).IncreaseScore();
-
             }
 
             if (collidingObject is House)
             {
                 //SetXY(400, 400);
-
             }
             if (collidingObject is Obstacle)
             {
-
                 collidingObject.LateDestroy();
                 Slowplayer();
-               
-                
-                
-               
             }
-
         }
-
     }
+
     void Slowplayer()
     {
         moveSpeedTruck = moveSpeedTruck * 0.2f;
         turnSpeedTruck = turnSpeedTruck * 0.2f;
         Slowed = true;
         
-        
         Console.WriteLine("Slowed");
         slowtime = Time.time + slowdurationMs;
-        
     }
-
-
-
 
     void Update()
     {
-
         MoveTruck();
         if (Time.time > slowtime && Slowed)
         {
-            
             Slowed = false;
-            
         }
         if (Slowed == false)
         {
             moveSpeedTruck = 5;
             turnSpeedTruck = 3;
         }
-
-        
     }
 }
