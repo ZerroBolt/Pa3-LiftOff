@@ -13,6 +13,7 @@ using TiledMapParser;
 public class Player : AnimationSprite
 {
     float  turnSpeedTruck = 3;
+    float maxSpeed = 7;
     float moveSpeedTruck = 5;
     int slowdurationMs = 2000;
     int slowtime = 0;
@@ -33,10 +34,28 @@ public class Player : AnimationSprite
         set { _playerName = value; }
     }
 
+    const string fileLocation = "CarSpritesheet.png";
+    AnimationSprite car;
+
+    float originalSpeed = 0;
+
     public Player(string fileName, int cols, int rows, TiledObject tiledobject = null) : base(fileName, cols, rows)
     {
 
     }
+
+
+    public Player(TiledObject obj=null) : base(fileLocation, 4, 1)
+    {
+        this.alpha = 0;
+        SetFrame(0);
+        car = new AnimationSprite(fileLocation, 4, 1);
+        car.SetOrigin(car.width / 2, car.height / 2);
+        ((MyGame)game).AddChild(car);
+    }
+
+    float rotationValue = 140;
+    float maxRotationValue = 280;
 
     void RotateTruck()
     {
@@ -85,36 +104,105 @@ public class Player : AnimationSprite
 
     void MoveTruck()
     {
+        car.SetXY(x, y);
         Moving = false;
         float dx = 0;
         float dy = 0;
+        float oldx = x;
+        float oldy = y;
+        
+        
+        //RotateTruck();
 
-        RotateTruck();
+        //if (MyGame.isPortOpen)
+        //{
+            //dx = MoveTruck(dx);
+        //}
+        //else
+        //{
+           // if (Input.GetKey(Key.W))
+           // {
+           //     Move(0, dx -= moveSpeedTruck);
+           //     Moving = true;
+           // }
+           // if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
+          //  {
+           //     Move(0, dx -= moveSpeedTruck + 0.5f);
+           //     Moving = true;
+          //  }
 
-        if (MyGame.isPortOpen)
+          //  if (Input.GetKey(Key.S))
+          //  {
+          //      Move(0, dx += moveSpeedTruck / 2);
+          //      Moving = true;
+          //  }
+     //   }
+
+        if (Input.GetKey(Key.A))
         {
-            dx = MoveTruck(dx);
+            //rotationValue--;
+            rotation -= turnSpeedTruck;
+            //dx -= moveSpeedTruck;
+            //if (rotationValue > 0)
+            //{
+            //    rotationValue -= moveSpeedTruck;
+            //}
         }
-        else
+
+        if (Input.GetKey(Key.D))
         {
-            if (Input.GetKey(Key.W))
-            {
-                Move(0, dx -= moveSpeedTruck);
-                Moving = true;
-            }
-            if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
-            {
-                Move(0, dx -= moveSpeedTruck + 0.5f);
-                Moving = true;
-            }
-
-            if (Input.GetKey(Key.S))
-            {
-                Move(0, dx += moveSpeedTruck / 2);
-                Moving = true;
-            }
+            //rotationValue++;
+            rotation += turnSpeedTruck;
+            //dx += moveSpeedTruck;
+            //if (rotationValue < maxRotationValue)
+            //{
+            //    rotationValue += moveSpeedTruck;
+            //}
         }
 
+        //rotation = rotationValue;
+
+        if (Input.GetKey(Key.W) && !Slowed)
+        {
+            if (moveSpeedTruck < maxSpeed)
+            {
+                moveSpeedTruck += 1f;
+            }
+            originalSpeed = moveSpeedTruck;
+        }
+        else if (Input.GetKey(Key.S) && !Slowed)
+        {
+            if (moveSpeedTruck > -3)
+            {
+                moveSpeedTruck -= 1f;
+            }
+            else moveSpeedTruck = -3f;
+            originalSpeed = moveSpeedTruck;
+        }
+
+        if (moveSpeedTruck != 0)
+        {
+            Moving = true;
+        }
+
+        Move(0, dx -= moveSpeedTruck);
+
+        //if (Input.GetKey(Key.W))
+        //{
+        //    Move(0, dx -= moveSpeedTruck);
+        //    Moving = true;
+        //}
+        //if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
+        //{
+        //    Move(0, dx -= moveSpeedTruck + 0.5f);
+        //    Moving = true;
+        //}
+
+        //if (Input.GetKey(Key.S))
+        //{
+        //    Move(0, dx += moveSpeedTruck / 2);
+        //    Moving = true;
+        //}
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
 
@@ -124,32 +212,44 @@ public class Player : AnimationSprite
         MoveUntilCollision(vx, 0);
         MoveUntilCollision(0, vy);
 
+        SetMovingFrame(rotation);
+
         GameObject[] collidingObjects = GetCollisions();
         foreach (GameObject collidingObject in collidingObjects)
         {
             if (collidingObject is Enemy && Moving)
             {
-                ((MyGame)game).IncreaseScore();
+                Enemy enemy = collidingObject as Enemy;
+
                 ((MyGame)game).StartCombo();
                 ((MyGame)game).ResetComboTime();
-                ((MyGame)game).IncreaseKills();
 
-                ((MyGame)game).SpawnScore();
-                ((MyGame)game).scorehud.UpdateScoreOnCar(collidingObject as Enemy);
+                enemy.health--;
 
-                collidingObject.LateDestroy();
+                if (enemy.IsInvincible()) break;
 
-                switch (Utils.Random(0, 3))
+                if (enemy.health <= 0)
                 {
-                    case 0: dyingzombie1.Play(false, 0, 1); break;
-                    case 1: dyingzombie2.Play(false, 0, 1); break;
-                    case 2: dyingzombie3.Play(false, 0, 1); break;
+                    ((MyGame)game).IncreaseScore();
+                    ((MyGame)game).IncreaseKills();
+
+                    ((MyGame)game).SpawnScore();
+                    ((MyGame)game).scorehud.UpdateScoreOnCar(enemy);
+
+                    collidingObject.LateDestroy();
+
+                    switch (Utils.Random(0, 3))
+                    {
+                        case 0: dyingzombie1.Play(false, 0, 1); break;
+                        case 1: dyingzombie2.Play(false, 0, 1); break;
+                        case 2: dyingzombie3.Play(false, 0, 1); break;
+                    }
                 }
             }
 
             if (collidingObject is House)
             {
-                //SetXY(400, 400);
+                //SetXY(oldx, oldy);
             }
             if (collidingObject is Obstacle)
             {
@@ -160,8 +260,32 @@ public class Player : AnimationSprite
         }
     }
 
+    void SetMovingFrame(float rotation)
+    {
+        float rotationDegree = (rotation % 360);
+        if (rotationDegree < 0) rotationDegree = 360 - (Math.Abs(rotation) % 360);
+        if (rotationDegree > 30 && rotationDegree < 150)
+        {
+            car.SetFrame(3);
+        }
+        else if (rotationDegree > 150 && rotationDegree < 210)
+        {
+            car.SetFrame(1);
+        }
+        else if (rotationDegree > 210 && rotationDegree < 330)
+        {
+            car.SetFrame(2);
+        }
+        else if (rotationDegree < 30 || rotationDegree > 330)
+        {
+            car.SetFrame(0);
+        }
+    }
+
     void Slowplayer()
     {
+        originalSpeed = moveSpeedTruck;
+
         moveSpeedTruck = moveSpeedTruck * 0.2f;
         turnSpeedTruck = turnSpeedTruck * 0.2f;
         Slowed = true;
@@ -186,7 +310,7 @@ public class Player : AnimationSprite
         }
         if (Slowed == false)
         {
-            moveSpeedTruck = 5;
+            moveSpeedTruck = originalSpeed;
             turnSpeedTruck = 3;
         }
 
