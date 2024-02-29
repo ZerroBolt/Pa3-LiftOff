@@ -118,11 +118,17 @@ public class Player : AnimationSprite
                 
                
             }
+          /*  if (collidingObject is Lightning)
+            {
+                collidingObject.Destroy();
+                Slowplayer();
+                
+            }*/
 
         }
 
     }
-    void Slowplayer()
+    public void Slowplayer()
     {
         moveSpeedTruck = moveSpeedTruck * 0.2f;
         turnSpeedTruck = turnSpeedTruck * 0.2f;

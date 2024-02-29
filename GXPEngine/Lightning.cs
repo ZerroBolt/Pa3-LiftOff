@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using TiledMapParser;
@@ -16,16 +17,18 @@ public class Lightning : AnimationSprite
         Initialize(obj);
         
     }
-  
+   
 
 
-    int Despawntime = Time.time + 2300;
+
+    int Despawntime = Time.time + 2250;
 
     int _setcycletime = Time.time + 2000;
-    bool collidable = false;
+    int playthunder = Time.time + 2250;
+    bool collidable = false; 
     // bool = if its alarm
     // alarm == load alarm sprite
-    // lighting == loads lightnings and makes it collidable
+    // lighting == loads lightnings and makes it collidable //i mean nu is het eigenlijk een stun omdat ie zo vaak slowed HET IS EEN FEATURE
     
     private void Initialize(TiledObject obj)
     {
@@ -91,7 +94,7 @@ public class Lightning : AnimationSprite
 
 
 
-    
+    Sound thundersound = new Sound("thunder.wav");
     Sound dyingzombie1 = new Sound("zombie_dying1.wav", false);
     Sound dyingzombie2 = new Sound("zombie_dying2.wav", false);
     Sound dyingzombie3 = new Sound("zombie_dying3.wav", false);
@@ -112,6 +115,11 @@ public class Lightning : AnimationSprite
                     case 2: dyingzombie3.Play(); break;
                 }
             }
+           if (collidingObject is Player && collidable)
+            {
+                
+                ((Player)collidingObject).Slowplayer();
+            }
         }
 
         
@@ -127,10 +135,14 @@ public class Lightning : AnimationSprite
         {
             SetCycle(0, 4);
             collidable = true;
+            if (Time.time > playthunder)
+            {
+                thundersound.Play();
+            }
         }
 
         Animate(0.25f);
-       // oke nu nog een timer maken dat ie naar de setcycle voor lightning zelf switchd
+       
           
 
     }

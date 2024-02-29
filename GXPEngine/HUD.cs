@@ -6,7 +6,7 @@ using TiledMapParser;
 
 public class HUD : GameObject
 {
-    EasyDraw displayHealth;
+    /*EasyDraw displayHealth;*/
     EasyDraw displayScore;
     /* EasyDraw displayCombo;
      EasyDraw displayComboTime;
@@ -17,7 +17,7 @@ public class HUD : GameObject
     public HUD(MyGame game)
     {
         this.mygame = game;
-        DisplayHealthHUD();
+       /* DisplayHealthHUD();*/
         DisplayScoreHUD();
         /*DisplayComboHUD();
         DisplayComboTimeHUD();*/
@@ -31,7 +31,7 @@ public class HUD : GameObject
 
 
     //HEALTH
-    void DisplayHealthHUD()
+/*    void DisplayHealthHUD()
     {
         displayHealth = new EasyDraw(1366,768,false);
         displayHealth.TextSize(40);
@@ -48,7 +48,7 @@ public class HUD : GameObject
         
         displayHealth.Text("Health:" + mygame.hp.ToString(), game.width/2-120,game.height/2+200);
   
-    }
+    }*/
 
     //SCORE
     void DisplayScoreHUD()
@@ -66,6 +66,8 @@ public class HUD : GameObject
         displayScore.Text("Score:" + mygame.score.ToString(), game.width/2-120, 100);
 
     }
+
+
 
 /*    void DisplayComboHUD()
     {
@@ -120,16 +122,16 @@ public class HUD : GameObject
     {
         //UPDATE HUDS
         UpdateScore();
-        UpdateHealth();
+        /*UpdateHealth();*/
         /*UpdateCombo();
         UpdateComboTime();*/
         //UpdateKills();
         
         
 
-        if (mygame.hp < 4)
+       /* if (mygame.hp < 4)
         {
             displayHealth.Fill(Color.Red);
-        }
+        }*/
     }
 }

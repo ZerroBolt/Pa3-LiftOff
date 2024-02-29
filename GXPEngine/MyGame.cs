@@ -28,7 +28,12 @@ public class MyGame : Game
 	static bool isPortOpen = false;
 	ObstacleController oc;
     LightningController lc;
+    EasyDraw hbar;
+    int maxHealth = 10;
    
+    int healthBarWidth = 200;
+    int healthBarHeight = 20;
+    
 
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
     {
@@ -65,13 +70,25 @@ public class MyGame : Game
 
         music.Play(false, 0, 1);
 
+        hbar = new EasyDraw(1366, 768, false);
         
+
+        // Draw health bar background
+        hbar.Fill(200, 200, 200);
+        hbar.Rect(100, 100, healthBarWidth, healthBarHeight);
+
+        // Draw health bar foreground
+        hbar.Fill(255, 0, 0);
+        float healthRatio = (float)hp / maxHealth;
+        hbar.Rect(100, 100, healthBarWidth * healthRatio, healthBarHeight);
+        AddChild(hbar);
     }
 
-
+    
 	public void DecreaseHealth()
 	{
 		hp--;
+        
 	}
 
     
@@ -127,7 +144,13 @@ public class MyGame : Game
         
     }
 
+    void UpdateHealthbar()
+    {
+        float healthRatio = (float)hp / maxHealth;
+        hbar.ClearTransparent();
+        hbar.Rect(game.width/2, game.height/2+140, healthBarWidth * healthRatio, healthBarHeight);
 
+    }
 
 
 
@@ -135,7 +158,9 @@ public class MyGame : Game
     // For every game object, Update is called every frame, by the engine:
     void Update()
     {
-       
+        UpdateHealthbar();
+
+
         if (Input.GetKey(Key.P))
 		{
        
@@ -149,10 +174,12 @@ public class MyGame : Game
         }
         combohudtime = (combotime - Time.time);
 
-       
+        
     }
 
-	static void Main()                          // Main() is the first method that's called when the program is run
+
+
+    static void Main()                          // Main() is the first method that's called when the program is run
 	{
 		if (isPortOpen)
 		{

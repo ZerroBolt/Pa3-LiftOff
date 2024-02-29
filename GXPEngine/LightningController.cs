@@ -11,13 +11,12 @@ class LightningController : GameObject
 
 
 
-    int lightningSpawnIntervalMs = 2000;
+    int lightningSpawnIntervalMs = 8000;
     int lastLightningSpawn = 2000;
 
 
 
-    Sound thundersound = new Sound("thunder.wav");
-
+    
    
 
     public LightningController()
@@ -34,7 +33,7 @@ class LightningController : GameObject
         //enemies.Add(enemy);
         AddChild(lightning);
         Console.WriteLine("add lightning");
-        thundersound.Play();
+       
         
 
     }
