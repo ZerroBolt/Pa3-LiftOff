@@ -81,9 +81,10 @@ public class MyGame : Game
         AddChild(cam);
     }
 
-	public void DecreaseHealth()
+	public void DecreaseHealth(int damage=0)
 	{
-		hp--;
+        if (damage > 0) hp -= damage;
+		else hp--;
         if (hp <= 0)
         {
             gameOver = true;
@@ -151,7 +152,7 @@ public class MyGame : Game
 
         MoveCamera();
 
-        Console.WriteLine("X: " + level.GetCurrentPlayer().x + "Y: " + level.GetCurrentPlayer().y);
+        //Console.WriteLine("X: " + level.GetCurrentPlayer().x + "Y: " + level.GetCurrentPlayer().y);
     }
 
     public ScoreHUD scorehud;

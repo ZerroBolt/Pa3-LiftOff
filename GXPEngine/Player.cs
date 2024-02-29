@@ -43,6 +43,8 @@ public class Player : AnimationSprite
         Moving = false;
         float dx = 0;
         float dy = 0;
+        float oldx = x;
+        float oldy = y;
 
         if (Input.GetKey(Key.A))
         {
@@ -86,27 +88,37 @@ public class Player : AnimationSprite
         {
             if (collidingObject is Enemy && Moving)
             {
-                ((MyGame)game).IncreaseScore();
+                Enemy enemy = collidingObject as Enemy;
+
                 ((MyGame)game).StartCombo();
                 ((MyGame)game).ResetComboTime();
-                ((MyGame)game).IncreaseKills();
 
-                ((MyGame)game).SpawnScore();
-                ((MyGame)game).scorehud.UpdateScoreOnCar(collidingObject as Enemy);
+                enemy.health--;
 
-                collidingObject.LateDestroy();
+                if (enemy.IsInvincible()) break;
 
-                switch (Utils.Random(0, 3))
+                if (enemy.health <= 0)
                 {
-                    case 0: dyingzombie1.Play(false, 0, 1); break;
-                    case 1: dyingzombie2.Play(false, 0, 1); break;
-                    case 2: dyingzombie3.Play(false, 0, 1); break;
+                    ((MyGame)game).IncreaseScore();
+                    ((MyGame)game).IncreaseKills();
+
+                    ((MyGame)game).SpawnScore();
+                    ((MyGame)game).scorehud.UpdateScoreOnCar(enemy);
+
+                    collidingObject.LateDestroy();
+
+                    switch (Utils.Random(0, 3))
+                    {
+                        case 0: dyingzombie1.Play(false, 0, 1); break;
+                        case 1: dyingzombie2.Play(false, 0, 1); break;
+                        case 2: dyingzombie3.Play(false, 0, 1); break;
+                    }
                 }
             }
 
             if (collidingObject is House)
             {
-                //SetXY(400, 400);
+                //SetXY(oldx, oldy);
             }
             if (collidingObject is Obstacle)
             {

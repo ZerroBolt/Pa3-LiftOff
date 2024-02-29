@@ -5,17 +5,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TiledMapParser;
 
 public class Enemy : AnimationSprite
 {
-    const string imageLocation = "Zom.png";
-
-    float speed = 1f;
-    int health = 1;
-
     float animSpeed = 0.25f;
-    public Sprite target;
+    Sprite target;
+
+    float _speed = 0.5f;
+    public float speed
+    {
+        get { return _speed; }
+        set { _speed = value; }
+    }
+
+    int maxHealth = 1;
+
+    int _health = 1;
+    public int health
+    {
+        get { return _health; }
+        set 
+        { 
+            _health = value;
+            if (_health > 0)
+            {
+                float percentage = 1f * _health / maxHealth;
+                SetColor(1, percentage, percentage);
+            }
+        }
+    }
 
     int _damage = 1;
     public int damage
@@ -24,10 +42,9 @@ public class Enemy : AnimationSprite
         set { _damage = value; }
     }
 
-    //TODO: change cols and rows for animation sprite
-    public Enemy(TiledObject obj=null) : base(imageLocation, 1, 1)
+    public Enemy(string filename, int cols, int rows, int frames = -1, bool keepInCache = false, bool addCollider = true) : base(filename, cols, rows, frames, keepInCache, addCollider)
     {
-        Initialize(obj);
+        Initialize();
     }
 
     Sound hithouse = new Sound("house_damage.wav");
@@ -35,20 +52,13 @@ public class Enemy : AnimationSprite
     Sound spawning2 = new Sound("zombie_spawning2.wav");
     Sound spawning3 = new Sound("zombie_spawning3.wav");
 
-    private void Initialize(TiledObject obj)
+    protected void Initialize()
     {
         SetOrigin(width / 2, height / 2);
-        //TODO: setcycle for animation sprite
-        //SetCycle(0, 4);
-        scale = 0.15f;
-        collider.isTrigger = true;
 
-        if (obj != null)
-        {
-            speed = obj.GetFloatProperty("speed", 1f);
-            health = obj.GetIntProperty("health", 1);
-            damage = obj.GetIntProperty("damage", 1);
-        }
+        maxHealth = health;
+        
+        collider.isTrigger = true;
 
         setRandomPosition();
     }
@@ -84,8 +94,6 @@ public class Enemy : AnimationSprite
             case 0: spawning1.Play(); break;
             case 1: spawning2.Play(); break;
             case 2: spawning3.Play(); break;
-
-
         }
     }
 
@@ -94,7 +102,7 @@ public class Enemy : AnimationSprite
         this.target = target;
     }
 
-    private void Update()
+    protected void Update()
     {
         if (this.target == null) return;
 
@@ -138,7 +146,7 @@ public class Enemy : AnimationSprite
         if (HitTest(target))
         {
             this.Destroy();
-            ((MyGame)game).DecreaseHealth();
+            ((MyGame)game).DecreaseHealth(damage);
             hithouse.Play();
         }
 
@@ -163,5 +171,18 @@ public class Enemy : AnimationSprite
 
         //Return Vector2 with calculate x,y value devided by square root
         return new Vector2(xVal / sqrtVal, yVal / sqrtVal);
+    }
+
+    int invincibleDurationMs = 1000;
+    int invincibleTime = 0;
+    public bool IsInvincible()
+    {
+        if (Time.time > invincibleTime)
+        {
+            invincibleTime = Time.time + invincibleDurationMs;
+            return false;
+        }
+
+        return true;
     }
 }
