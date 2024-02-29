@@ -120,14 +120,14 @@ public class Enemy : AnimationSprite
                 dx -= speed * CalculateAngle().x;
             }
 
-            if (dx < 0)
-            {
-                Mirror(false, false);
-            }
-            else
-            {
-                Mirror(true, false);
-            }
+            //if (dx < 0)
+            //{
+            //    Mirror(false, false);
+            //}
+            //else
+            //{
+            //    Mirror(true, false);
+            //}
         }
 
         if (y < target.y)
@@ -150,7 +150,7 @@ public class Enemy : AnimationSprite
             hithouse.Play();
         }
 
-        Animate(animSpeed);
+        //Animate(animSpeed);
     }
 
     Vector2 CalculateAngle()

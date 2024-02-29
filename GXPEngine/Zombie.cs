@@ -9,23 +9,38 @@ using TiledMapParser;
 
 public class Zombie : Enemy
 {
-    const string imageLocation = "Zom.png";
+    const string imageLocation = "basic_zombie.png";
+    float animSpeed = 0.15f;
 
     //TODO: change cols and rows for animation sprite
-    public Zombie() : base(imageLocation, 1, 1)
+    public Zombie() : base(imageLocation, 3, 3)
     {
         //TODO: setcycle for animation sprite
         //SetCycle(0, 4);
         health = 1;
         damage = 1;
         speed = 1f;
-        scale = 0.15f;
+        scale = 1f;
+
+        SetCycle(0, 7);
 
         base.Initialize();
     }
 
     void Update()
     {
+        float oldx = x;
         base.Update();
+
+        Animate(animSpeed);
+
+        if (oldx > x)
+        {
+            Mirror(true, false);
+        }
+        else
+        {
+            Mirror(false, false);
+        }
     }
 }
