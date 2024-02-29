@@ -29,13 +29,13 @@ class LightningController : GameObject
     {
         Lightning lightning = new Lightning();
 
-
+        
         //TODO: Do we need to have the enemies in a list?
         //enemies.Add(enemy);
         AddChild(lightning);
         Console.WriteLine("add lightning");
         thundersound.Play();
-      
+        
 
     }
  

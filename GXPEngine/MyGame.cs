@@ -28,8 +28,8 @@ public class MyGame : Game
 	static bool isPortOpen = false;
 	ObstacleController oc;
     LightningController lc;
+   
 
-    
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
     {
         //TODO: delete demo background
@@ -64,6 +64,8 @@ public class MyGame : Game
         Sound music = new Sound("music.mp3", true,true);
 
         music.Play(false, 0, 1);
+
+        
     }
 
 
@@ -147,7 +149,7 @@ public class MyGame : Game
         }
         combohudtime = (combotime - Time.time);
 
-        
+       
     }
 
 	static void Main()                          // Main() is the first method that's called when the program is run

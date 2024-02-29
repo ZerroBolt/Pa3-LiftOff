@@ -1,6 +1,7 @@
 ﻿using GXPEngine;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,25 +10,31 @@ using TiledMapParser;
 public class Lightning : AnimationSprite
 {
     
-
-    public Lightning(TiledObject obj = null) : base("colors.png", 1, 1)
+    
+    public Lightning(TiledObject obj = null) : base("strike_warning.png", 4,3)
     {
         Initialize(obj);
+        
     }
-    
-    
-    int Despawntime = Time.time + 300;
+  
+
+
+    int Despawntime = Time.time + 2300;
+
+    int _setcycletime = Time.time + 2000;
+    bool collidable = false;
     // bool = if its alarm
     // alarm == load alarm sprite
     // lighting == loads lightnings and makes it collidable
     
     private void Initialize(TiledObject obj)
     {
+        
         SetOrigin(width / 2, height / 2);
-
+        
+        SetCycle(4, 10); 
         collider.isTrigger = true;
-        scale = 2f;
-
+        scale = 1f;
         
 
         setRandomPosition();
@@ -35,14 +42,17 @@ public class Lightning : AnimationSprite
 
     private void setRandomPosition()
     {
+        x = Utils.Random(0, game.width-width);
+        y = Utils.Random(0, game.height-height);
+
         //Set enemy position randomly on TOP,RIGHT,DOWN,LEFT outside of screen
-        switch (Utils.Random(0, 4))
+/*        switch (Utils.Random(0, 4))
         {
             case 0:
                 //TOP
 
-                x = Utils.Random(0 - this.width, game.width);
-                y = Utils.Random(0 - this.height, game.width / 2);
+                x = Utils.Random(0 - game.width, game.width);
+                y = Utils.Random(0 - game.height, game.width / 2);
 
 
 
@@ -50,7 +60,7 @@ public class Lightning : AnimationSprite
             case 1:
                 //RIGHT
                 x = Utils.Random(game.width / 2, game.width);
-                y = Utils.Random(0 + this.height, game.height - this.height);
+                y = Utils.Random(0 - game.height, game.height - game.height);
 
                 break;
             case 2:
@@ -62,10 +72,10 @@ public class Lightning : AnimationSprite
             case 3:
                 //LEFT
                 x = Utils.Random(0, game.width / 2 - 50);
-                y = Utils.Random(0 - this.height, game.height + this.height);
+                y = Utils.Random(0 - game.height, game.height + game.height);
 
                 break;
-        }
+        }*/
 
     }
     
@@ -88,11 +98,11 @@ public class Lightning : AnimationSprite
     void Update()
     {
         
-        
+
         GameObject[] collidingObjects = GetCollisions();
         foreach (GameObject collidingObject in collidingObjects)
         {
-            if (collidingObject is Enemy)
+            if (collidingObject is Enemy && collidable)
             {
                 collidingObject.LateDestroy();
                 switch (Utils.Random(0, 3))
@@ -113,8 +123,15 @@ public class Lightning : AnimationSprite
             Console.WriteLine("destroy Alarm");
         }
 
+        if (Time.time > _setcycletime)
+        {
+            SetCycle(0, 4);
+            collidable = true;
+        }
 
+        Animate(0.25f);
+       // oke nu nog een timer maken dat ie naar de setcycle voor lightning zelf switchd
+          
 
-       
     }
 }
