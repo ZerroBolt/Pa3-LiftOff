@@ -21,7 +21,7 @@ public class MyGame : Game
     
 	EnemyController ec;
     
-	public static bool isPortOpen = false;
+	public static bool isPortOpen = true;
     
 	ObstacleController oc;
     LightningController lc;
@@ -82,6 +82,8 @@ public class MyGame : Game
         music.Play(false, 0, 1);
 
         AddChild(cam);
+
+        ArduinoInput.SubscribeToStepEvent();
     }
 
 	public void DecreaseHealth(int damage=0)

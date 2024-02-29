@@ -12,8 +12,8 @@ using TiledMapParser;
 
 public class Player : AnimationSprite
 {
-    float  turnSpeedTruck = 3;
-    float maxSpeed = 7;
+    float  turnSpeedTruck = 1;
+    float maxSpeed = 5;
     float moveSpeedTruck = 5;
     int slowdurationMs = 2000;
     int slowtime = 0;
@@ -62,15 +62,40 @@ public class Player : AnimationSprite
         if (MyGame.isPortOpen)
         {
             //TODO: Rotate the truck based on the steering wheel rotation
+            int wheelRotation = ArduinoInput.GetSteeringRotation();
+            int shiftValue =  ArduinoInput.GetShiftPosition();
+
+            Console.WriteLine(wheelRotation);
+
             // Rotation 0 - 30 && speed 91 - 100 = drift left
+            if ((wheelRotation > 0 && wheelRotation <= 30) && (shiftValue > 90 && shiftValue <= 100))
+            {
+                // Drift left
+            }
 
             // Rotation 250 - 280 && speed 91 - 100 = drift right
+            else if ((wheelRotation > 250 && wheelRotation <= 280) && (shiftValue > 90 && shiftValue <= 100))
+            {
+                // Drift right
+            }
 
             // Rotation 0 - 120 = rotate left
+            else if (wheelRotation > -140 && wheelRotation < -20)
+            {
+                this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
+            }
 
             // Rotation 160 - 280 = rotation right
+            else if (wheelRotation > 20 && wheelRotation < 140)
+            {
+                this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
+            }
 
             // Rotation 121 - 159 = move forward
+            else
+            {
+                // Move forward
+            }
 
         }
         else
@@ -78,23 +103,30 @@ public class Player : AnimationSprite
             if (Input.GetKey(Key.A))
             {
                 rotation -= turnSpeedTruck;
-                Moving = true;
             }
 
             if (Input.GetKey(Key.D))
             {
                 rotation += turnSpeedTruck;
-                Moving = true;
             }
         }
     }
 
     float MoveTruck(float dx)
     {
+        int shiftValue = ArduinoInput.GetShiftPosition();
         //TODO: Move the truck based on the shift position
         // Shift 0 - 39 = backwards
+        if (shiftValue <= 25)
+        {
+            moveSpeedTruck = -2;
+        }
 
         // Shift 40 - 90 = forwards
+        if (shiftValue > 25 && shiftValue < 100)
+        {
+            moveSpeedTruck = (maxSpeed / 75) * shiftValue;
+        }
 
         // Shift 91 - 100 = drift
 
@@ -110,99 +142,35 @@ public class Player : AnimationSprite
         float dy = 0;
         float oldx = x;
         float oldy = y;
-        
-        
-        //RotateTruck();
 
-        //if (MyGame.isPortOpen)
+        RotateTruck();
+
+        //if (Input.GetKey(Key.W) && !Slowed)
         //{
-            //dx = MoveTruck(dx);
+        //    if (moveSpeedTruck < maxSpeed)
+        //    {
+        //        moveSpeedTruck += 0.5f;
+        //    }
+        //    originalSpeed = moveSpeedTruck;
         //}
-        //else
+        //else if (Input.GetKey(Key.S) && !Slowed)
         //{
-           // if (Input.GetKey(Key.W))
-           // {
-           //     Move(0, dx -= moveSpeedTruck);
-           //     Moving = true;
-           // }
-           // if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
-          //  {
-           //     Move(0, dx -= moveSpeedTruck + 0.5f);
-           //     Moving = true;
-          //  }
-
-          //  if (Input.GetKey(Key.S))
-          //  {
-          //      Move(0, dx += moveSpeedTruck / 2);
-          //      Moving = true;
-          //  }
-     //   }
-
-        if (Input.GetKey(Key.A))
-        {
-            //rotationValue--;
-            rotation -= turnSpeedTruck;
-            //dx -= moveSpeedTruck;
-            //if (rotationValue > 0)
-            //{
-            //    rotationValue -= moveSpeedTruck;
-            //}
-        }
-
-        if (Input.GetKey(Key.D))
-        {
-            //rotationValue++;
-            rotation += turnSpeedTruck;
-            //dx += moveSpeedTruck;
-            //if (rotationValue < maxRotationValue)
-            //{
-            //    rotationValue += moveSpeedTruck;
-            //}
-        }
-
-        //rotation = rotationValue;
-
-        if (Input.GetKey(Key.W) && !Slowed)
-        {
-            if (moveSpeedTruck < maxSpeed)
-            {
-                moveSpeedTruck += 1f;
-            }
-            originalSpeed = moveSpeedTruck;
-        }
-        else if (Input.GetKey(Key.S) && !Slowed)
-        {
-            if (moveSpeedTruck > -3)
-            {
-                moveSpeedTruck -= 1f;
-            }
-            else moveSpeedTruck = -3f;
-            originalSpeed = moveSpeedTruck;
-        }
+        //    if (moveSpeedTruck > -3)
+        //    {
+        //        moveSpeedTruck -= 0.5f;
+        //    }
+        //    else moveSpeedTruck = -3f;
+        //    originalSpeed = moveSpeedTruck;
+        //}
 
         if (moveSpeedTruck != 0)
         {
             Moving = true;
         }
+        MoveTruck(dx);
 
         Move(0, dx -= moveSpeedTruck);
-
-        //if (Input.GetKey(Key.W))
-        //{
-        //    Move(0, dx -= moveSpeedTruck);
-        //    Moving = true;
-        //}
-        //if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
-        //{
-        //    Move(0, dx -= moveSpeedTruck + 0.5f);
-        //    Moving = true;
-        //}
-
-        //if (Input.GetKey(Key.S))
-        //{
-        //    Move(0, dx += moveSpeedTruck / 2);
-        //    Moving = true;
-        //}
+        //Move(0, MoveTruck(dx));
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
 
@@ -320,14 +288,14 @@ public class Player : AnimationSprite
 
             movingcar.Play(false, 0, 0);
 
-            Console.WriteLine("moving");
+            //Console.WriteLine("moving");
         }
         else
         {
             idlecar.Play(false, 0, 0);
 
-            Console.WriteLine("not moving");
+            //Console.WriteLine("not moving");
         }
-        Console.WriteLine(Time.time);
+        //Console.WriteLine(Time.time);
     }
 }
