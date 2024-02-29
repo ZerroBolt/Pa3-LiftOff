@@ -44,6 +44,7 @@ public class Player : AnimationSprite
 
     }
 
+
     public Player(TiledObject obj=null) : base(fileLocation, 4, 1)
     {
         this.alpha = 0;
@@ -55,6 +56,52 @@ public class Player : AnimationSprite
 
     float rotationValue = 140;
     float maxRotationValue = 280;
+
+    void RotateTruck()
+    {
+        if (MyGame.isPortOpen)
+        {
+            //TODO: Rotate the truck based on the steering wheel rotation
+            // Rotation 0 - 30 && speed 91 - 100 = drift left
+
+            // Rotation 250 - 280 && speed 91 - 100 = drift right
+
+            // Rotation 0 - 120 = rotate left
+
+            // Rotation 160 - 280 = rotation right
+
+            // Rotation 121 - 159 = move forward
+
+        }
+        else
+        {
+            if (Input.GetKey(Key.A))
+            {
+                rotation -= turnSpeedTruck;
+                Moving = true;
+            }
+
+            if (Input.GetKey(Key.D))
+            {
+                rotation += turnSpeedTruck;
+                Moving = true;
+            }
+        }
+    }
+
+    float MoveTruck(float dx)
+    {
+        //TODO: Move the truck based on the shift position
+        // Shift 0 - 39 = backwards
+
+        // Shift 40 - 90 = forwards
+
+        // Shift 91 - 100 = drift
+
+
+        return dx;
+    }
+
     void MoveTruck()
     {
         car.SetXY(x, y);
@@ -64,6 +111,32 @@ public class Player : AnimationSprite
         float oldx = x;
         float oldy = y;
         
+        
+        //RotateTruck();
+
+        //if (MyGame.isPortOpen)
+        //{
+            //dx = MoveTruck(dx);
+        //}
+        //else
+        //{
+           // if (Input.GetKey(Key.W))
+           // {
+           //     Move(0, dx -= moveSpeedTruck);
+           //     Moving = true;
+           // }
+           // if (Input.GetKey(Key.W) && Input.GetKey(Key.ENTER))
+          //  {
+           //     Move(0, dx -= moveSpeedTruck + 0.5f);
+           //     Moving = true;
+          //  }
+
+          //  if (Input.GetKey(Key.S))
+          //  {
+          //      Move(0, dx += moveSpeedTruck / 2);
+          //      Moving = true;
+          //  }
+     //   }
 
         if (Input.GetKey(Key.A))
         {

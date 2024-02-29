@@ -21,8 +21,7 @@ public class MyGame : Game
     
 	EnemyController ec;
     
-	static SerialPort port;
-	static bool isPortOpen = false;
+	public static bool isPortOpen = false;
     
 	ObstacleController oc;
     LightningController lc;
@@ -36,9 +35,13 @@ public class MyGame : Game
 
     public Camera cam;
 
+    static ArduinoInput arduinoInput;
+
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
         targetFps = 60;
+
+        //arduinoInput.SubscribeToStepEvent();
 
         Initialize();
     }
@@ -135,7 +138,7 @@ public class MyGame : Game
 		if (Input.GetKey(Key.P))
 		{
 			Console.WriteLine(GetDiagnostics());
-		}
+        }
 
         if (Input.GetKeyDown(Key.E) && Input.GetKey(Key.LEFT_SHIFT))
         {
@@ -244,28 +247,7 @@ public class MyGame : Game
         // Open port to read values from arduino
 		if (isPortOpen)
 		{
-            port = new SerialPort();
-            port.PortName = "COM11";
-            port.BaudRate = 19200;
-            port.RtsEnable = true;
-            port.DtrEnable = true;
-            port.Open();
-            //while (true)
-            //{
-            //    string line = port.ReadLine(); // read separated values
-            //    string line = port.ReadExisting(); // when using characters
-            //    if (line != "")
-            //    {
-            //        Console.WriteLine("Read from port: " + line);
-
-            //    }
-
-            //    if (Console.KeyAvailable)
-            //    {
-            //        ConsoleKeyInfo key = Console.ReadKey();
-            //        port.Write(key.KeyChar.ToString());  // writing a string to Arduino
-            //    }
-            //}
+            arduinoInput = new ArduinoInput();
         }
 
         new MyGame().Start();                   // Create a "MyGame" and start it

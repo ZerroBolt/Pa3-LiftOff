@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 public class ScoreBoard : EasyDraw
 {
-    //TODO: Fill in hour registration school: 4,5 hours
-
     List<Player> playerList;
 
     public ScoreBoard(int gameWidth, int gameHeight, List<Player> players) : base(gameWidth, gameHeight, false)
@@ -81,6 +79,12 @@ public class ScoreBoard : EasyDraw
     void Update()
     {
         //TODO: when key is turned in score screen restart game
+        if (MyGame.isPortOpen && ArduinoInput.GetControllerKey() && PlayerNameMade)
+        {
+            ((MyGame)game).Restart();
+            PlayerNameMade = false;
+        }
+
         if (Input.GetKeyDown(Key.R) && Input.GetKey(Key.LEFT_SHIFT))
         {
             ((MyGame)game).Restart();
@@ -89,10 +93,12 @@ public class ScoreBoard : EasyDraw
         InputNameLetters();
     }
 
+    bool PlayerNameMade = false;
     void InputNameLetters()
     {
         if (nameInput != null && pName.Length < nameLength)
         {
+            //TODO: Turn wheel / move slider to go to another letter
             if (Input.GetKeyDown(Key.UP))
             {
                 char[] letters = alphabet.ToCharArray();
@@ -123,7 +129,8 @@ public class ScoreBoard : EasyDraw
                 nameInput.ClearTransparent();
                 nameInput.Text(pName + currentLetter);
             }
-            else if (Input.GetKeyDown(Key.ENTER))
+            //TODO: Turn key to go to next letter (test this)
+            else if (Input.GetKeyDown(Key.ENTER) || (MyGame.isPortOpen && ArduinoInput.GetControllerKey()))
             {
                 pName += currentLetter;
                 if (pName.Length == nameLength)
@@ -139,13 +146,17 @@ public class ScoreBoard : EasyDraw
 
         if (nameInput != null && pName.Length == nameLength)
         {
-            if (Input.GetKey(Key.ENTER))
+            //TODO: Turn key to input your name (test this)
+            if (Input.GetKey(Key.ENTER) || (MyGame.isPortOpen && ArduinoInput.GetControllerKey()))
             {
+                PlayerNameMade = true;
+
                 if (nameInput != null)
                 {
                     nameInput.Destroy();
                     nameInput = null;
                 }
+
                 ShowHighScores();
             }
         }
