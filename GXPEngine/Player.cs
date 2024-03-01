@@ -235,6 +235,12 @@ public class Player : AnimationSprite
                 collidingObject.LateDestroy();
                 Slowplayer();
             }
+          /*  if (collidingObject is Lightning)
+            {
+                collidingObject.Destroy();
+                Slowplayer();
+                
+            }*/
         }
 
         if (x < 0 - (car.width / 2) || x > game.width + (car.width / 2))
@@ -268,8 +274,9 @@ public class Player : AnimationSprite
             car.SetFrame(0);
         }
     }
+    
+    public void Slowplayer()
 
-    void Slowplayer()
     {
         originalSpeed = moveSpeedTruck;
 
@@ -303,8 +310,6 @@ public class Player : AnimationSprite
 
         if (Moving)
         {
-
-
             movingcar.Play(false, 0, 0);
 
             //Console.WriteLine("moving");

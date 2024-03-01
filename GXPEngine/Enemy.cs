@@ -72,6 +72,7 @@ public class Enemy : AnimationSprite
                 //TOP
                 x = Utils.Random(0 - this.width, game.width + this.width);
                 y = Utils.Random(0 - this.height, 0);
+ 
                 break;
             case 1:
                 //RIGHT

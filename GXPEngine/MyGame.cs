@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO.Ports;                           // System.Drawing contains drawing tools such as Color definitions
+using System.Media;
 
 public class MyGame : Game
 {
@@ -26,6 +27,12 @@ public class MyGame : Game
 	ObstacleController oc;
     LightningController lc;
     HUD hud;
+    
+    EasyDraw hbar;
+    int maxHealth = 10;
+   
+    int healthBarWidth = 200;
+    int healthBarHeight = 20;
 
     bool gameOver = false;
     bool scoreBoardShowing = false;
@@ -82,6 +89,19 @@ public class MyGame : Game
         Sound music = new Sound("music.mp3", true, true);
 
         music.Play(false, 0, 1);
+        
+        hbar = new EasyDraw(1366, 768, false);
+        
+
+        // Draw health bar background
+        hbar.Fill(200, 200, 200);
+        hbar.Rect(100, 100, healthBarWidth, healthBarHeight);
+
+        // Draw health bar foreground
+        hbar.Fill(255, 0, 0);
+        float healthRatio = (float)hp / maxHealth;
+        hbar.Rect(100, 100, healthBarWidth * healthRatio, healthBarHeight);
+        AddChild(hbar);
 
         AddChild(cam);
 
@@ -130,6 +150,7 @@ public class MyGame : Game
         combotime = Time.time + combodurationMs;
 
         combodurationMs = (int)(combodurationMs * 0.99f);
+
     }
     public void ResetCombo()
     {
@@ -141,6 +162,8 @@ public class MyGame : Game
 	// For every game object, Update is called every frame, by the engine:
 	void Update()
 	{
+      UpdateHealthbar();
+  
 		if (Input.GetKey(Key.P))
 		{
 			Console.WriteLine(GetDiagnostics());
@@ -170,6 +193,14 @@ public class MyGame : Game
         scorehud = new ScoreHUD(this);
         AddChild(scorehud);
     }
+
+    void UpdateHealthbar()
+    {
+        float healthRatio = (float)hp / maxHealth;
+        hbar.ClearTransparent();
+        hbar.Rect(game.width/2, game.height/2+140, healthBarWidth * healthRatio, healthBarHeight);
+    }
+
     public void DecreaseOb()
     {
         obstaclecount--;
@@ -226,6 +257,7 @@ public class MyGame : Game
         }
     }
 
+
     // Destroy all objects and create them again to restart the game
     public void Restart()
     {
@@ -248,6 +280,7 @@ public class MyGame : Game
         scoreBoardShowing = false;
         level = null;
     }
+
 
     static void Main()                          // Main() is the first method that's called when the program is run
 	{

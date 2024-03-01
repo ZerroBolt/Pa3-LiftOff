@@ -5,7 +5,7 @@ using System.Threading;
 
 public class HUD : GameObject
 {
-    EasyDraw displayHealth;
+    /*EasyDraw displayHealth;*/
     EasyDraw displayScore;
     MyGame mygame;
 
@@ -13,12 +13,12 @@ public class HUD : GameObject
     {
         this.SetXY(-game.width/2, -game.height/2);
         this.mygame = game;
-        DisplayHealthHUD();
+       /* DisplayHealthHUD();*/
         DisplayScoreHUD();
     }
 
     //HEALTH
-    void DisplayHealthHUD()
+/*    void DisplayHealthHUD()
     {
         displayHealth = new EasyDraw(1366, 768, false);
         displayHealth.TextSize(30);
@@ -30,9 +30,11 @@ public class HUD : GameObject
     void UpdateHealth()
     {
         displayHealth.ClearTransparent();
+        
+        displayHealth.Text("Health:" + mygame.hp.ToString(), game.width/2-120,game.height/2+200);
+  
+    }*/
 
-        displayHealth.Text("Health:" + mygame.hp.ToString(), game.width / 2, game.height / 2 + 150);
-    }
 
     //SCORE
     void DisplayScoreHUD()
@@ -50,8 +52,8 @@ public class HUD : GameObject
         displayScore.Text("Score:" + mygame.score.ToString(), game.width / 2 - 120, 100);
     }
 
-    /*
-    void DisplayComboHUD()
+
+/*    void DisplayComboHUD()
     {
         displayCombo = new EasyDraw(1366, 768, false);
         displayCombo.TextSize(20);
@@ -108,18 +110,14 @@ public class HUD : GameObject
     {
         //UPDATE HUDS
         UpdateScore();
-        UpdateHealth();
-
-        /*
-        UpdateCombo();
-        UpdateComboTime();
-        */
-
+        /*UpdateHealth();*/
+        /*UpdateCombo();
+        UpdateComboTime();*/
         //UpdateKills();
 
-        if (mygame.hp < 4)
+       /* if (mygame.hp < 4)
         {
             displayHealth.Fill(Color.Red);
-        }
+        }*/
     }
 }
