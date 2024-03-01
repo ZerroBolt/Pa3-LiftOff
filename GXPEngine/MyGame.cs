@@ -21,11 +21,11 @@ public class MyGame : Game
     
 	EnemyController ec;
     
-	static SerialPort port;
-	static bool isPortOpen = false;
+	public static bool isPortOpen = true;
     
 	ObstacleController oc;
     LightningController lc;
+    HUD hud;
 
     bool gameOver = false;
     bool scoreBoardShowing = false;
@@ -36,9 +36,13 @@ public class MyGame : Game
 
     public Camera cam;
 
+    static ArduinoInput arduinoInput;
+
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
 	{
         targetFps = 60;
+
+        //arduinoInput.SubscribeToStepEvent();
 
         Initialize();
     }
@@ -50,9 +54,10 @@ public class MyGame : Game
 
     void Initialize()
     {
-        Sprite background = new Sprite("BgDemo.png", false, false);
+        Sprite background = new Sprite("Background.png", false, false);
         background.SetOrigin(background.width/2, background.height/2);
         background.SetXY(game.width/2, game.height/2);
+        background.scale = 1.2f;
         AddChild(background);
 
         cam = new Camera(0, 0, game.width, game.height);
@@ -71,7 +76,7 @@ public class MyGame : Game
         lc = new LightningController();
         AddChild(lc);
 
-        HUD hud = new HUD(this);
+        hud = new HUD(this);
         cam.AddChild(hud);
 
         Sound music = new Sound("music.mp3", true, true);
@@ -79,25 +84,30 @@ public class MyGame : Game
         music.Play(false, 0, 1);
 
         AddChild(cam);
+
+        if (isPortOpen) ArduinoInput.SubscribeToStepEvent();
     }
 
-	public void DecreaseHealth()
+	public void DecreaseHealth(int damage=0)
 	{
-		hp--;
+        if (damage > 0) hp -= damage;
+		else hp--;
         if (hp <= 0)
         {
             gameOver = true;
         }
 	}
-    public void IncreaseScore()
+    public void IncreaseScore(bool isDrifting)
 	{
+        int defaultScore = 1000;
+        if (isDrifting) defaultScore = (int)(defaultScore * 1.5f); 
         if (combo == 0)
         {
-            score = score + 1000;
+            score = score + defaultScore;
         }
         else
         {
-            scoreincrease =  1000 * combo;
+            scoreincrease = defaultScore * combo;
 
             score = scoreincrease + score;
         }
@@ -134,7 +144,7 @@ public class MyGame : Game
 		if (Input.GetKey(Key.P))
 		{
 			Console.WriteLine(GetDiagnostics());
-		}
+        }
 
         if (Input.GetKeyDown(Key.E) && Input.GetKey(Key.LEFT_SHIFT))
         {
@@ -151,7 +161,7 @@ public class MyGame : Game
 
         MoveCamera();
 
-        Console.WriteLine("X: " + level.GetCurrentPlayer().x + "Y: " + level.GetCurrentPlayer().y);
+        //Console.WriteLine("X: " + level.GetCurrentPlayer().x + "Y: " + level.GetCurrentPlayer().y);
     }
 
     public ScoreHUD scorehud;
@@ -211,6 +221,7 @@ public class MyGame : Game
 
                 ec.Remove();
                 oc.Remove();
+                hud.Remove();
             }
         }
     }
@@ -243,28 +254,7 @@ public class MyGame : Game
         // Open port to read values from arduino
 		if (isPortOpen)
 		{
-            port = new SerialPort();
-            port.PortName = "COM11";
-            port.BaudRate = 19200;
-            port.RtsEnable = true;
-            port.DtrEnable = true;
-            port.Open();
-            //while (true)
-            //{
-            //    string line = port.ReadLine(); // read separated values
-            //    string line = port.ReadExisting(); // when using characters
-            //    if (line != "")
-            //    {
-            //        Console.WriteLine("Read from port: " + line);
-
-            //    }
-
-            //    if (Console.KeyAvailable)
-            //    {
-            //        ConsoleKeyInfo key = Console.ReadKey();
-            //        port.Write(key.KeyChar.ToString());  // writing a string to Arduino
-            //    }
-            //}
+            arduinoInput = new ArduinoInput();
         }
 
         new MyGame().Start();                   // Create a "MyGame" and start it

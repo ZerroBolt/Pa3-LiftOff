@@ -41,11 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BigBoi.cs" />
+    <Compile Include="Enemy.cs" />
+    <Compile Include="ArduinoInput.cs" />
     <Compile Include="Lightning.cs" />
     <Compile Include="LightningController.cs" />
     <Compile Include="ObstacleController.cs" />
     <Compile Include="Obstacle.cs" />
-    <Compile Include="Enemy.cs" />
+    <Compile Include="Zombie.cs" />
     <Compile Include="EnemyController.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />
     <Compile Include="GXPEngine\AddOns\SpriteBatch.cs" />
