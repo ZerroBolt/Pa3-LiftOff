@@ -54,9 +54,7 @@ public class Player : AnimationSprite
         ((MyGame)game).AddChild(car);
     }
 
-    float rotationValue = 140;
-    float maxRotationValue = 280;
-
+    bool isDrifting = false;
     void RotateTruck()
     {
         if (MyGame.isPortOpen)
@@ -65,36 +63,43 @@ public class Player : AnimationSprite
             int wheelRotation = ArduinoInput.GetSteeringRotation();
             int shiftValue =  ArduinoInput.GetShiftPosition();
 
-            Console.WriteLine(wheelRotation);
+            //Console.WriteLine(wheelRotation);
 
             // Rotation 0 - 30 && speed 91 - 100 = drift left
-            if ((wheelRotation > 0 && wheelRotation <= 30) && (shiftValue > 90 && shiftValue <= 100))
+            if ((wheelRotation > -140 && wheelRotation < -120) && (shiftValue > 90 && shiftValue <= 100))
             {
                 // Drift left
+                isDrifting = true;
+                this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
             }
 
             // Rotation 250 - 280 && speed 91 - 100 = drift right
-            else if ((wheelRotation > 250 && wheelRotation <= 280) && (shiftValue > 90 && shiftValue <= 100))
+            else if ((wheelRotation > 120 && wheelRotation <= 140) && (shiftValue > 90 && shiftValue <= 100))
             {
                 // Drift right
+                isDrifting = true;
+                this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
             }
 
             // Rotation 0 - 120 = rotate left
             else if (wheelRotation > -140 && wheelRotation < -20)
             {
                 this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
+                isDrifting = false;
             }
 
             // Rotation 160 - 280 = rotation right
             else if (wheelRotation > 20 && wheelRotation < 140)
             {
                 this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
+                isDrifting = false;
             }
 
             // Rotation 121 - 159 = move forward
             else
             {
                 // Move forward
+                isDrifting = false;
             }
 
         }
@@ -112,24 +117,26 @@ public class Player : AnimationSprite
         }
     }
 
-    float MoveTruck(float dx)
+    float SetMovingSpeed(float dx)
     {
-        int shiftValue = ArduinoInput.GetShiftPosition();
-        //TODO: Move the truck based on the shift position
-        // Shift 0 - 39 = backwards
-        if (shiftValue <= 25)
+        if (MyGame.isPortOpen)
         {
-            moveSpeedTruck = -2;
+            int shiftValue = ArduinoInput.GetShiftPosition();
+            //TODO: Move the truck based on the shift position
+            // Shift 0 - 39 = backwards
+            if (shiftValue < 25)
+            {
+                moveSpeedTruck = -2;
+            }
+
+            // Shift 40 - 90 = forwards
+            if (shiftValue > 30 && shiftValue < 100)
+            {
+                moveSpeedTruck = (maxSpeed / 75) * shiftValue;
+            }
+
+            // Shift 91 - 100 = drift
         }
-
-        // Shift 40 - 90 = forwards
-        if (shiftValue > 25 && shiftValue < 100)
-        {
-            moveSpeedTruck = (maxSpeed / 75) * shiftValue;
-        }
-
-        // Shift 91 - 100 = drift
-
 
         return dx;
     }
@@ -163,14 +170,16 @@ public class Player : AnimationSprite
         //    originalSpeed = moveSpeedTruck;
         //}
 
+        
+        if (!Slowed) SetMovingSpeed(dx);
+
+        Move(0, dx -= moveSpeedTruck);
+        //Move(0, MoveTruck(dx));
+
         if (moveSpeedTruck != 0)
         {
             Moving = true;
         }
-        MoveTruck(dx);
-
-        Move(0, dx -= moveSpeedTruck);
-        //Move(0, MoveTruck(dx));
 
         int delaTimeClamped = Mathf.Min(Time.deltaTime, 40);
 
@@ -198,7 +207,7 @@ public class Player : AnimationSprite
 
                 if (enemy.health <= 0)
                 {
-                    ((MyGame)game).IncreaseScore();
+                    ((MyGame)game).IncreaseScore(isDrifting);
                     ((MyGame)game).IncreaseKills();
 
                     ((MyGame)game).SpawnScore();
@@ -217,6 +226,7 @@ public class Player : AnimationSprite
 
             if (collidingObject is House)
             {
+                //TODO: Fix moving through house
                 //SetXY(oldx, oldy);
             }
             if (collidingObject is Obstacle)
@@ -225,6 +235,15 @@ public class Player : AnimationSprite
                 collidingObject.LateDestroy();
                 Slowplayer();
             }
+        }
+
+        if (x < 0 - (car.width / 2) || x > game.width + (car.width / 2))
+        {
+            x = oldx;
+        }
+        if (y < 0 || y > game.height)
+        {
+            y = oldy;
         }
     }
 

@@ -66,7 +66,7 @@ public class ArduinoInput
             if (line != "")
             {
                 // OUTPUT: <int> key activated 0-1 ; <int> shift position 0-100 ; <int> steer rotation 0-280
-                Console.WriteLine("Read from port: " + line);
+                //Console.WriteLine("Read from port: " + line);
             }
         }
     }
@@ -76,7 +76,8 @@ public class ArduinoInput
         int keyValue = int.Parse(line.Split(';').First());
         //Console.WriteLine("Value key: " + keyValue);
         if (keyValue == 0) return false;
-        else return true;
+        Console.WriteLine(keyValue);
+        return true;
     }
 
     public static int GetShiftPosition()

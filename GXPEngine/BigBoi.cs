@@ -9,23 +9,35 @@ using TiledMapParser;
 
 public class BigBoi : Enemy
 {
-    const string imageLocation = "Zom.png";
+    const string imageLocation = "big_guy.png";
+    float animSpeed = 0.20f;
 
-    //TODO: change cols and rows for animation sprite
-    public BigBoi() : base(imageLocation, 1, 1)
+    public BigBoi() : base(imageLocation, 4, 3)
     {
-        //TODO: setcycle for animation sprite
-        //SetCycle(0, 4);
         health = 2;
         damage = 2;
         speed = 0.5f;
-        scale = 0.25f;
+        scale = 1f;
+
+        SetCycle(0, 12);
 
         base.Initialize();
     }
 
     void Update()
     {
+        float oldx = x;
         base.Update();
+
+        Animate(animSpeed);
+
+        if (oldx > x)
+        {
+            Mirror(true, false);
+        }
+        else
+        {
+            Mirror(false, false);
+        }
     }
 }

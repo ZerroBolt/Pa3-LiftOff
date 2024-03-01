@@ -25,6 +25,7 @@ public class MyGame : Game
     
 	ObstacleController oc;
     LightningController lc;
+    HUD hud;
 
     bool gameOver = false;
     bool scoreBoardShowing = false;
@@ -53,9 +54,10 @@ public class MyGame : Game
 
     void Initialize()
     {
-        Sprite background = new Sprite("BgDemo.png", false, false);
+        Sprite background = new Sprite("Background.png", false, false);
         background.SetOrigin(background.width/2, background.height/2);
         background.SetXY(game.width/2, game.height/2);
+        background.scale = 1.2f;
         AddChild(background);
 
         cam = new Camera(0, 0, game.width, game.height);
@@ -74,7 +76,7 @@ public class MyGame : Game
         lc = new LightningController();
         AddChild(lc);
 
-        HUD hud = new HUD(this);
+        hud = new HUD(this);
         cam.AddChild(hud);
 
         Sound music = new Sound("music.mp3", true, true);
@@ -83,7 +85,7 @@ public class MyGame : Game
 
         AddChild(cam);
 
-        ArduinoInput.SubscribeToStepEvent();
+        if (isPortOpen) ArduinoInput.SubscribeToStepEvent();
     }
 
 	public void DecreaseHealth(int damage=0)
@@ -95,15 +97,17 @@ public class MyGame : Game
             gameOver = true;
         }
 	}
-    public void IncreaseScore()
+    public void IncreaseScore(bool isDrifting)
 	{
+        int defaultScore = 1000;
+        if (isDrifting) defaultScore = (int)(defaultScore * 1.5f); 
         if (combo == 0)
         {
-            score = score + 1000;
+            score = score + defaultScore;
         }
         else
         {
-            scoreincrease =  1000 * combo;
+            scoreincrease = defaultScore * combo;
 
             score = scoreincrease + score;
         }
@@ -217,6 +221,7 @@ public class MyGame : Game
 
                 ec.Remove();
                 oc.Remove();
+                hud.Remove();
             }
         }
     }
