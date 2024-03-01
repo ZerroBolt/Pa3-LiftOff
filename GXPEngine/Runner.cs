@@ -1,25 +1,22 @@
-﻿using GXPEngine;
-using GXPEngine.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TiledMapParser;
 
-public class Zombie : Enemy
+public class Runner : Enemy
 {
-    const string imageLocation = "basic_zombie.png";
-    float animSpeed = 0.15f;
+    const string imageLocation = "runner_zombie.png";
+    float animSpeed = 0.45f;
 
-    public Zombie() : base(imageLocation, 3, 3)
+    public Runner() : base(imageLocation, 5, 4)
     {
         health = 1;
         damage = 1;
-        speed = 0.7f;
+        speed = 1f;
         scale = 0.9f;
 
-        SetCycle(0, 8);
+        SetCycle(0, 18);
 
         base.Initialize();
     }

@@ -15,7 +15,7 @@ public class Obstacle : AnimationSprite
         Initialize(obj);
     }
 
-    int Despawntime = Time.time + 15000;
+    int Despawntime = Time.time + 25000;
     private void Initialize(TiledObject obj)
     {
         SetOrigin(width / 2, height / 2);

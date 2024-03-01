@@ -8,7 +8,7 @@ using System.Media;
 
 public class MyGame : Game
 {
-    public int hp = 10;
+    public int hp = 20;
     public int score = 0;
     public int scoreincrease = 0;
     public int combo = 1;

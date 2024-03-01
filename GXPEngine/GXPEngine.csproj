@@ -48,6 +48,7 @@
     <Compile Include="LightningController.cs" />
     <Compile Include="ObstacleController.cs" />
     <Compile Include="Obstacle.cs" />
+    <Compile Include="Runner.cs" />
     <Compile Include="Zombie.cs" />
     <Compile Include="EnemyController.cs" />
     <Compile Include="GXPEngine\AddOns\Gizmos.cs" />

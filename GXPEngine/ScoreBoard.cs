@@ -29,7 +29,7 @@ public class ScoreBoard : EasyDraw
         EasyDraw titleDraw = new EasyDraw(game.width, game.height, false);
         titleDraw.TextSize(50);
         titleDraw.TextAlign(CenterMode.Center, CenterMode.Min);
-        titleDraw.Text("Truck Pocalypse");
+        titleDraw.Text("Truckpocalypse");
         titleDraw.y = 20;
         AddChild(titleDraw);
 
@@ -135,7 +135,7 @@ public class ScoreBoard : EasyDraw
     void Update()
     {
         //TODO: when key is turned in score screen restart game
-        if (MyGame.isPortOpen && ArduinoInput.GetControllerKey() && PlayerNameMade && (Time.time > nameInputTime))
+        if ((Input.GetKeyDown(Key.ENTER) || (MyGame.isPortOpen && ArduinoInput.GetControllerKey())) && PlayerNameMade && (Time.time > nameInputTime))
         {
             ((MyGame)game).Restart();
             PlayerNameMade = false;

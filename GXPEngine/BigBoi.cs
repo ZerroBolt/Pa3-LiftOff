@@ -15,9 +15,9 @@ public class BigBoi : Enemy
     public BigBoi() : base(imageLocation, 4, 3)
     {
         health = 2;
-        damage = 2;
-        speed = 0.5f;
-        scale = 1f;
+        damage = 1;
+        speed = 0.4f;
+        scale = 1.3f;
 
         SetCycle(0, 12);
 

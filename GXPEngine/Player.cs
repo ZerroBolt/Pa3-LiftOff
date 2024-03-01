@@ -127,7 +127,7 @@ public class Player : AnimationSprite
             // Shift 0 - 39 = backwards
             if (shiftValue < 25)
             {
-                moveSpeedTruck = -2;
+                moveSpeedTruck = -3;
             }
 
             // Shift 40 - 90 = forwards
