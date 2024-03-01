@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using TiledMapParser;
 
 public class Player : AnimationSprite
 {
-    float  turnSpeedTruck = 1;
+    float turnSpeedTruck = 1;
     float maxSpeed = 5;
     float moveSpeedTruck = 5;
     int slowdurationMs = 2000;
@@ -45,7 +46,7 @@ public class Player : AnimationSprite
     }
 
 
-    public Player(TiledObject obj=null) : base(fileLocation, 4, 1)
+    public Player(TiledObject obj = null) : base(fileLocation, 4, 1)
     {
         this.alpha = 0;
         SetFrame(0);
@@ -61,12 +62,12 @@ public class Player : AnimationSprite
         {
             //TODO: Rotate the truck based on the steering wheel rotation
             int wheelRotation = ArduinoInput.GetSteeringRotation();
-            int shiftValue =  ArduinoInput.GetShiftPosition();
+            int shiftValue = ArduinoInput.GetShiftPosition();
 
             //Console.WriteLine(wheelRotation);
 
             // Rotation 0 - 30 && speed 91 - 100 = drift left
-            if ((wheelRotation > -140 && wheelRotation < -120) && (shiftValue > 90 && shiftValue <= 100))
+            if ((wheelRotation >= -140 && wheelRotation < -120) && (shiftValue > 92 && shiftValue <= 100))
             {
                 // Drift left
                 isDrifting = true;
@@ -74,7 +75,7 @@ public class Player : AnimationSprite
             }
 
             // Rotation 250 - 280 && speed 91 - 100 = drift right
-            else if ((wheelRotation > 120 && wheelRotation <= 140) && (shiftValue > 90 && shiftValue <= 100))
+            else if ((wheelRotation > 130 && wheelRotation <= 140) && (shiftValue > 92 && shiftValue <= 100))
             {
                 // Drift right
                 isDrifting = true;
@@ -82,14 +83,14 @@ public class Player : AnimationSprite
             }
 
             // Rotation 0 - 120 = rotate left
-            else if (wheelRotation > -140 && wheelRotation < -20)
+            else if (wheelRotation >= -140 && wheelRotation < -20)
             {
                 this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
                 isDrifting = false;
             }
 
             // Rotation 160 - 280 = rotation right
-            else if (wheelRotation > 20 && wheelRotation < 140)
+            else if (wheelRotation > 20 && wheelRotation <= 140)
             {
                 this.rotation += ((turnSpeedTruck / 240) * wheelRotation);
                 isDrifting = false;
@@ -132,7 +133,7 @@ public class Player : AnimationSprite
             // Shift 40 - 90 = forwards
             if (shiftValue > 30 && shiftValue < 100)
             {
-                moveSpeedTruck = (maxSpeed / 75) * shiftValue;
+                moveSpeedTruck = (maxSpeed / 100) * shiftValue;
             }
 
             // Shift 91 - 100 = drift
@@ -170,7 +171,7 @@ public class Player : AnimationSprite
         //    originalSpeed = moveSpeedTruck;
         //}
 
-        
+
         if (!Slowed) SetMovingSpeed(dx);
 
         Move(0, dx -= moveSpeedTruck);
@@ -189,7 +190,8 @@ public class Player : AnimationSprite
         MoveUntilCollision(vx, 0);
         MoveUntilCollision(0, vy);
 
-        SetMovingFrame(rotation);
+        if (!isDrifting) SetMovingFrame(rotation);
+        else SetMovingFrame(rotation, 90);
 
         GameObject[] collidingObjects = GetCollisions();
         foreach (GameObject collidingObject in collidingObjects)
@@ -228,6 +230,7 @@ public class Player : AnimationSprite
             {
                 //TODO: Fix moving through house
                 //SetXY(oldx, oldy);
+                
             }
             if (collidingObject is Obstacle)
             {
@@ -235,12 +238,12 @@ public class Player : AnimationSprite
                 collidingObject.LateDestroy();
                 Slowplayer();
             }
-          /*  if (collidingObject is Lightning)
-            {
-                collidingObject.Destroy();
-                Slowplayer();
-                
-            }*/
+            /*  if (collidingObject is Lightning)
+              {
+                  collidingObject.Destroy();
+                  Slowplayer();
+
+              }*/
         }
 
         if (x < 0 - (car.width / 2) || x > game.width + (car.width / 2))
@@ -253,10 +256,13 @@ public class Player : AnimationSprite
         }
     }
 
-    void SetMovingFrame(float rotation)
+    void SetMovingFrame(float rotation, int quarterRotation = 0)
     {
-        float rotationDegree = (rotation % 360);
-        if (rotationDegree < 0) rotationDegree = 360 - (Math.Abs(rotation) % 360);
+        float rotationDegree = (rotation % 360) + quarterRotation;
+        if (rotationDegree < 0) rotationDegree = 360 - ((Math.Abs(rotation) % 360) - quarterRotation);
+
+        Console.WriteLine(rotationDegree);
+
         if (rotationDegree > 30 && rotationDegree < 150)
         {
             car.SetFrame(3);
@@ -274,7 +280,7 @@ public class Player : AnimationSprite
             car.SetFrame(0);
         }
     }
-    
+
     public void Slowplayer()
 
     {

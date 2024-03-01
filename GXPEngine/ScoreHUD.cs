@@ -22,6 +22,8 @@ public class ScoreHUD : GameObject
     void DisplayScoreOnCar()
     {
         displayScoreOnCar = new EasyDraw(1366, 768, false);
+        displayScoreOnCar.SetOrigin(game.width/2, game.height/2);
+        displayScoreOnCar.SetXY(game.width / 2, game.height / 2);
         displayScoreOnCar.TextSize(30);
         displayScoreOnCar.Fill(Color.White);
         AddChild(displayScoreOnCar);

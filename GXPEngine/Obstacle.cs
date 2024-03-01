@@ -10,7 +10,7 @@ using TiledMapParser;
 public class Obstacle : AnimationSprite
 {
 
-    public Obstacle(TiledObject obj = null) : base("stone1.png", 1, 1)
+    public Obstacle(TiledObject obj = null) : base("cow.png", 1, 1)
     {
         Initialize(obj);
     }
@@ -21,7 +21,7 @@ public class Obstacle : AnimationSprite
         SetOrigin(width / 2, height / 2);
         
         collider.isTrigger = true;
-        scale = 0.25f;
+        scale = 0.75f;
 
         Vector2 position = setRandomPosition();
         SetXY(position.x, position.y);

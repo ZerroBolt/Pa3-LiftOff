@@ -9,16 +9,18 @@ using System.Threading.Tasks;
 public class ScoreBoard : EasyDraw
 {
     List<Player> playerList;
+    bool firstTime = false;
 
-    public ScoreBoard(int gameWidth, int gameHeight, List<Player> players) : base(gameWidth, gameHeight, false)
+    public ScoreBoard(int gameWidth, int gameHeight, List<Player> players, bool firstTime = false) : base(gameWidth, gameHeight, false)
     {
         playerList = players;
-        //ShowHighScores();
         this.SetXY(-game.width/2, -game.height/2);
-        ShowNameInput();
+
+        this.firstTime = firstTime;
+        PlayerNameMade = firstTime;
     }
 
-    void ShowHighScores()
+    public void ShowHighScores()
     {
         this.ClearTransparent();
         CreateBackground();
@@ -30,6 +32,29 @@ public class ScoreBoard : EasyDraw
         titleDraw.Text("Truck Pocalypse");
         titleDraw.y = 20;
         AddChild(titleDraw);
+
+        CreatPlayerList();
+
+        // Create EasyDraw for turn key text
+        EasyDraw turnKeyDraw = new EasyDraw(game.width, game.height, false);
+        turnKeyDraw.TextSize(30);
+        turnKeyDraw.TextAlign(CenterMode.Center, CenterMode.Max);
+        turnKeyDraw.Text("Turn key to start game");
+        turnKeyDraw.y -= 20;
+        AddChild(turnKeyDraw);
+    }
+
+    void CreatPlayerList()
+    {
+        if (firstTime)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Player p = new Player();
+                p.score = Utils.Random(1000, 50001);
+                playerList.Add(p);
+            }
+        }
 
         // Sort the playerlist based on score and take the top 10
         Player[] top10Scores = playerList.OrderByDescending(p => p.score).Take(10).ToArray();
@@ -54,14 +79,6 @@ public class ScoreBoard : EasyDraw
 
             AddChild(scoreDraw);
         }
-
-        // Create EasyDraw for turn key text
-        EasyDraw turnKeyDraw = new EasyDraw(game.width, game.height, false);
-        turnKeyDraw.TextSize(30);
-        turnKeyDraw.TextAlign(CenterMode.Center, CenterMode.Max);
-        turnKeyDraw.Text("Turn key to start game");
-        turnKeyDraw.y -= 20;
-        AddChild(turnKeyDraw);
     }
 
     void CreateBackground()
@@ -77,7 +94,7 @@ public class ScoreBoard : EasyDraw
     EasyDraw nameInput;
     EasyDraw gameOverDraw;
     EasyDraw turnKeyDraw;
-    void ShowNameInput()
+    public void ShowNameInput()
     {
         //TODO: Show a screen were the player can input their high score name
         this.ClearTransparent();
