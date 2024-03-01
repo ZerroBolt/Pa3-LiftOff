@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class EnemyController : GameObject
 {
-    List<Enemy> enemies;
+    List<Zombie> enemies;
     Sprite target = null;
 
     int enemySpawnIntervalMs = 2000;
@@ -15,16 +15,27 @@ public class EnemyController : GameObject
 
     public EnemyController()
     {
-        enemies = new List<Enemy>();
+        enemies = new List<Zombie>();
     }
 
     public void SpawnEnemy()
     {
-        Enemy enemy = new Enemy();
-        enemy.SetTarget(target);
-        //TODO: Do we need to have the enemies in a list?
-        //enemies.Add(enemy);
-        AddChild(enemy);
+        int random = Utils.Random(0, 100);
+        if (random < 85)
+        {
+            Zombie enemy = new Zombie();
+            enemy.SetTarget(target);
+            //TODO: Do we need to have the enemies in a list?
+            //enemies.Add(enemy);
+            AddChild(enemy);
+        }
+        else
+        {
+            Console.WriteLine("Spawning BigBoi!!");
+            BigBoi enemy = new BigBoi();
+            enemy.SetTarget(target);
+            AddChild(enemy);
+        }
     }
 
     void Update()
@@ -38,7 +49,7 @@ public class EnemyController : GameObject
                 //Decrease spawn interval everytime an enemy spawns
                 //enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
                 enemySpawnIntervalMs -= 50;
-                
+                Console.WriteLine(enemies.Count);
             }
         }
     }

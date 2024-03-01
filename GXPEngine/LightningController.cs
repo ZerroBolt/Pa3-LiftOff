@@ -1,4 +1,4 @@
-﻿using GXPEngine;
+using GXPEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +50,4 @@ class LightningController : GameObject
         }
        
     }
-
-
 }
