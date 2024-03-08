@@ -8,8 +8,8 @@ using System.Media;
 
 public class MyGame : Game
 {
-	public int hp = 10;
-	public int score = 0;
+    public int hp = 20;
+    public int score = 0;
     public int scoreincrease = 0;
     public int combo = 1;
     public int combodisplay = 0;
@@ -19,23 +19,24 @@ public class MyGame : Game
     int combodurationMs = 2000;
 
     public int obstaclecount = 0;
-    
-	EnemyController ec;
-    
-	public static bool isPortOpen = true;
-    
-	ObstacleController oc;
+
+    EnemyController ec;
+
+    public static bool isPortOpen = true;
+
+    ObstacleController oc;
     LightningController lc;
     HUD hud;
-    
+
     EasyDraw hbar;
     int maxHealth = 10;
-   
+
     int healthBarWidth = 200;
     int healthBarHeight = 20;
 
     bool gameOver = false;
     bool scoreBoardShowing = false;
+    bool isPlayingMusic = false;
 
     List<Player> playerList = new List<Player>();
 
@@ -43,13 +44,11 @@ public class MyGame : Game
 
     public Camera cam;
 
-    static ArduinoInput arduinoInput;
+    bool startGame = true;
 
     public MyGame() : base(1366, 768, false, false)     // Arcade screen is 1366 x 768 pixels
-	{
+    {
         targetFps = 60;
-
-        //arduinoInput.SubscribeToStepEvent();
 
         Initialize();
     }
@@ -59,13 +58,18 @@ public class MyGame : Game
         playerList.Add(player);
     }
 
-    void Initialize()
+    void CreateBackGround()
     {
         Sprite background = new Sprite("Background.png", false, false);
-        background.SetOrigin(background.width/2, background.height/2);
-        background.SetXY(game.width/2, game.height/2);
+        background.SetOrigin(background.width / 2, background.height / 2);
+        background.SetXY(game.width / 2, game.height / 2);
         background.scale = 1.2f;
         AddChild(background);
+    }
+
+    void Initialize()
+    {
+        CreateBackGround();
 
         cam = new Camera(0, 0, game.width, game.height);
         cam.scale = 0.8f;
@@ -86,12 +90,17 @@ public class MyGame : Game
         hud = new HUD(this);
         cam.AddChild(hud);
 
-        Sound music = new Sound("music.mp3", true, true);
+        if (!isPlayingMusic)
+        {
+            Sound music = new Sound("music.wav", true, true);
 
-        music.Play(false, 0, 1);
-        
+            music.Play(false, 0, 1);
+
+            isPlayingMusic = true;
+        }
+
         hbar = new EasyDraw(1366, 768, false);
-        
+
 
         // Draw health bar background
         hbar.Fill(200, 200, 200);
@@ -108,19 +117,19 @@ public class MyGame : Game
         if (isPortOpen) ArduinoInput.SubscribeToStepEvent();
     }
 
-	public void DecreaseHealth(int damage=0)
-	{
+    public void DecreaseHealth(int damage = 0)
+    {
         if (damage > 0) hp -= damage;
-		else hp--;
+        else hp--;
         if (hp <= 0)
         {
             gameOver = true;
         }
-	}
+    }
     public void IncreaseScore(bool isDrifting)
-	{
+    {
         int defaultScore = 1000;
-        if (isDrifting) defaultScore = (int)(defaultScore * 1.5f); 
+        if (isDrifting) defaultScore = (int)(defaultScore * 1.5f);
         if (combo == 0)
         {
             score = score + defaultScore;
@@ -132,7 +141,7 @@ public class MyGame : Game
             score = scoreincrease + score;
         }
         level.GetCurrentPlayer().score = score;
-	}
+    }
 
     public void IncreaseKills()
     {
@@ -159,21 +168,37 @@ public class MyGame : Game
         combodurationMs = 2000;
     }
 
-	// For every game object, Update is called every frame, by the engine:
-	void Update()
-	{
-      UpdateHealthbar();
-  
-		if (Input.GetKey(Key.P))
-		{
-			Console.WriteLine(GetDiagnostics());
+    // For every game object, Update is called every frame, by the engine:
+    void Update()
+    {
+        if (startGame)
+        {
+            ScoreBoard sb = new ScoreBoard(game.width, game.height, playerList, true);
+            cam.AddChild(sb);
+            sb.ShowHighScores();
+            scoreBoardShowing = true;
+
+            ec.Remove();
+            oc.Remove();
+            hud.Remove();
+            level.Remove();
+            hbar.Remove();
+            lc.Remove();
+            startGame = false;
+        }
+
+        UpdateHealthbar();
+
+        if (Input.GetKey(Key.P))
+        {
+            Console.WriteLine(GetDiagnostics());
         }
 
         if (Input.GetKeyDown(Key.E) && Input.GetKey(Key.LEFT_SHIFT))
         {
             gameOver = true;
         }
-        
+
         if (combotime < Time.time)
         {
             ResetCombo();
@@ -198,7 +223,7 @@ public class MyGame : Game
     {
         float healthRatio = (float)hp / maxHealth;
         hbar.ClearTransparent();
-        hbar.Rect(game.width/2, game.height/2+140, healthBarWidth * healthRatio, healthBarHeight);
+        hbar.Rect(game.width / 2, game.height / 2 + 140, healthBarWidth * healthRatio, healthBarHeight);
     }
 
     public void DecreaseOb()
@@ -248,11 +273,15 @@ public class MyGame : Game
             {
                 ScoreBoard sb = new ScoreBoard(game.width, game.height, playerList);
                 cam.AddChild(sb);
+                sb.ShowNameInput();
                 scoreBoardShowing = true;
 
                 ec.Remove();
                 oc.Remove();
                 hud.Remove();
+                level.Remove();
+                hbar.Remove();
+                lc.Remove();
             }
         }
     }
@@ -283,13 +312,13 @@ public class MyGame : Game
 
 
     static void Main()                          // Main() is the first method that's called when the program is run
-	{
+    {
         // Open port to read values from arduino
-		if (isPortOpen)
-		{
-            arduinoInput = new ArduinoInput();
+        if (isPortOpen)
+        {
+            new ArduinoInput();
         }
 
         new MyGame().Start();                   // Create a "MyGame" and start it
-	}
+    }
 }

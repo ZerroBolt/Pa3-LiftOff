@@ -49,7 +49,9 @@ public class HUD : GameObject
     void UpdateScore()
     {
         displayScore.ClearTransparent();
-        displayScore.Text("Score:" + mygame.score.ToString(), game.width / 2 - 120, 100);
+        displayScore.TextAlign(CenterMode.Min, CenterMode.Min);
+        displayScore.SetXY(20, 20);
+        displayScore.Text("Score:" + mygame.score.ToString());
     }
 
 

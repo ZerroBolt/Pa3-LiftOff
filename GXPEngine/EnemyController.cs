@@ -21,17 +21,21 @@ public class EnemyController : GameObject
     public void SpawnEnemy()
     {
         int random = Utils.Random(0, 100);
-        if (random < 85)
+        if (random < 80)
         {
             Zombie enemy = new Zombie();
             enemy.SetTarget(target);
-            //TODO: Do we need to have the enemies in a list?
-            //enemies.Add(enemy);
+            AddChild(enemy);
+        }
+        else if (random < 90)
+        {
+            Runner enemy = new Runner();
+            enemy.SetTarget(target);
             AddChild(enemy);
         }
         else
         {
-            Console.WriteLine("Spawning BigBoi!!");
+            //Console.WriteLine("Spawning BigBoi!!");
             BigBoi enemy = new BigBoi();
             enemy.SetTarget(target);
             AddChild(enemy);
@@ -44,11 +48,11 @@ public class EnemyController : GameObject
         {
             lastEnemySpawn = Time.time + enemySpawnIntervalMs;
             SpawnEnemy();
-            if (enemySpawnIntervalMs > 200)
+            if (enemySpawnIntervalMs > 300)
             {
                 //Decrease spawn interval everytime an enemy spawns
                 //enemySpawnIntervalMs = ((int)(enemySpawnIntervalMs * 0.99f));
-                enemySpawnIntervalMs -= 50;
+                enemySpawnIntervalMs -= 20;
                 Console.WriteLine(enemies.Count);
             }
         }
